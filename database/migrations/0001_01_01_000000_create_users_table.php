@@ -12,11 +12,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->id(); 
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            
+            // Atribut Profil & Role
+            $table->string('contact_number')->nullable();
+            $table->text('bio')->nullable(); 
+            $table->string('profile_photo')->nullable();
+            $table->enum('role', ['user', 'admin'])->default('user'); 
+            $table->enum('account_status', ['active', 'suspended'])->default('active'); 
+            
+            // Informasi Finansial / Rekening Bank
+            $table->string('bank_name')->nullable(); 
+            $table->string('account_number')->nullable();
+            $table->string('account_holder')->nullable();
+            $table->enum('account_type', ['tabungan', 'giro'])->default('tabungan'); 
+            $table->string('bank_proof_path')->nullable();
+            
             $table->rememberToken();
             $table->timestamps();
         });
