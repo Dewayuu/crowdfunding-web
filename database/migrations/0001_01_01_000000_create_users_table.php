@@ -6,35 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id(); 
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            
-            // Atribut Profil & Role
-            $table->string('contact_number')->nullable();
-            $table->text('bio')->nullable(); 
-            $table->string('profile_photo')->nullable();
-            $table->enum('role', ['user', 'admin'])->default('user'); 
-            $table->enum('account_status', ['active', 'suspended'])->default('active'); 
-            
-            // Informasi Finansial / Rekening Bank
-            $table->string('bank_name')->nullable(); 
-            $table->string('account_number')->nullable();
-            $table->string('account_holder')->nullable();
-            $table->enum('account_type', ['tabungan', 'giro'])->default('tabungan'); 
-            $table->string('bank_proof_path')->nullable();
-            
-            $table->rememberToken();
-            $table->timestamps();
+        Schema::create('tb_users', function (Blueprint $table) {
+            $table->id('user_id'); 
+            $table->string('email', 320)->unique();
+            $table->string('password', 255);
+            $table->string('contact_number', 20)->unique();
+            $table->string('username', 50)->unique();
+            $table->string('profile_photo', 255)->nullable();
+            $table->text('bio')->nullable();
+            $table->enum('role', ['admin', 'user']);
+            $table->enum('entity_type', ['individual', 'foundation', 'corporate', 'community']);
+            $table->enum('account_status', ['active', 'suspended'])->default('active');
+            $table->timestamps(); // Otomatis membuat created_at dan updated_at
         });
 
+        // Bawaan Laravel untuk keperluan Autentikasi Session & Token
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -51,13 +39,10 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('tb_users');
     }
 };

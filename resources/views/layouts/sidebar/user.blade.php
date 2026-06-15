@@ -29,7 +29,9 @@
                     <i class="fa-regular fa-user"></i>
                 </div>
                 <div class="overflow-hidden">
-                    <h4 class="text-sm font-semibold tracking-wide text-gray-100 truncate">{{ Auth::user()->name }}</h4>
+                    <h4 class="text-sm font-semibold tracking-wide text-gray-100">
+                        {{ Auth::user()->detailIndividual()->first()?->full_name ?? Auth::user()->username }}
+                    </h4>
                     <p class="text-xs text-gray-400 truncate">{{ Auth::user()->email }}</p>
                 </div>
             </div>

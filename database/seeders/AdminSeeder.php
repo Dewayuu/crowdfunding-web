@@ -13,22 +13,26 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('users')->insert([
-            'name' => 'Admin',
+        $adminId = DB::table('tb_users')->insertGetId([
             'email' => 'admin@gmail.com',
             'password' => Hash::make('admin123'),
-            'role' => 'admin',
-            'account_status' => 'active',
-            'account_type' => 'tabungan', 
             'contact_number' => '081234567890',
-            'bio' => 'Akun utama pengelola dan verifikator platform crowdfunding.',
+            'username' => 'admin_crowd',
             'profile_photo' => null,
-            'bank_name' => null,
-            'account_number' => null,
-            'account_holder' => null,
-            'bank_proof_path' => null,
+            'bio' => 'Akun utama pengelola dan verifikator platform crowdfunding.',
+            'role' => 'admin',
+            'entity_type' => 'individual',
+            'account_status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
+        ]);
+
+        DB::table('tb_user_details_individual')->insert([
+            'user_id' => $adminId,
+            'full_name' => 'Admin Utama Platform',
+            'national_id_number' => null, 
+            'birth_date' => '1995-08-17',
+            'gender' => 'male',
         ]);
     }
 }
