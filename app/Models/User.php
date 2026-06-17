@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\NotVisible; 
 use Illuminate\Notifications\Notifiable;
+use App\Models\UserDetailIndividual;
+use App\Models\UserDetailCorporate;
+use App\Models\UserDetailFoundation;
+use App\Models\UserDetailCommunity;
+use App\Models\UserBankAccount;
+use App\Models\UserDocument;
 
 class User extends Authenticatable
 {
@@ -36,6 +42,51 @@ class User extends Authenticatable
     public function detailIndividual()
     {
         return $this->hasOne(UserDetailIndividual::class, 'user_id', 'user_id');
+    }
+
+    public function detailCorporate()
+    {
+        return $this->hasOne(
+            UserDetailCorporate::class,
+            'user_id',
+            'user_id'
+        );
+    }
+
+    public function detailFoundation()
+    {
+        return $this->hasOne(
+            UserDetailFoundation::class,
+            'user_id',
+            'user_id'
+        );
+    }
+
+    public function detailCommunity()
+    {
+        return $this->hasOne(
+            UserDetailCommunity::class,
+            'user_id',
+            'user_id'
+        );
+    }
+
+    public function bankAccount()
+    {
+        return $this->hasOne(
+            UserBankAccount::class,
+            'user_id',
+            'user_id'
+        );
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(
+            UserDocument::class,
+            'user_id',
+            'user_id'
+        );
     }
 
     /**
