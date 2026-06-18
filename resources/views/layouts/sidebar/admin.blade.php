@@ -60,7 +60,8 @@
                     <span>Kelola User</span>
                 </a>
                 
-                <a href="#" wire:navigate class="flex items-center space-x-3 py-2.5 px-4 rounded-lg text-gray-300 hover:bg-[#422132] hover:text-white transition duration-200 font-medium">
+                <a href="{{ route('admin.disbursements') }}" wire:navigate
+                class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('admin.disbursements') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
                     <i class="fa-solid fa-money-bill-transfer text-sm w-5"></i>
                     <span>Pengajuan Dana</span>
                 </a>

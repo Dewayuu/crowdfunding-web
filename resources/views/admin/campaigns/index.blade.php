@@ -33,6 +33,12 @@
             </select>
             <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 pointer-events-none"><i class="fa-solid fa-chevron-down text-xs"></i></span>
         </div>
+
+        @if(request()->filled('search') || request()->filled('status') || request()->filled('category'))
+            <a href="{{ route('admin.campaigns') }}" class="inline-flex items-center justify-center px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm font-semibold rounded-xl transition shadow-sm whitespace-nowrap">
+                <i class="fa-solid fa-rotate-left mr-2 text-xs"></i> Reset
+            </a>
+        @endif
     </form>
 
     @if(session('success'))

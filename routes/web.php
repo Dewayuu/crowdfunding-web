@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController; 
 use App\Http\Controllers\Admin\CampaignController;
+use App\Http\Controllers\Admin\DisbursementController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,6 +23,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/campaigns', [CampaignController::class, 'index'])->name('admin.campaigns');
     Route::get('/admin/campaigns/{id}', [CampaignController::class, 'show'])->name('admin.campaigns.show');
     Route::post('/admin/campaigns/{id}/verify', [CampaignController::class, 'verify'])->name('admin.campaigns.verify');
+    Route::get('/admin/pengajuan-dana', [DisbursementController::class, 'index'])->name('admin.disbursements');
 });
 
 // USER
