@@ -68,7 +68,7 @@ class CampaignSeeder extends Seeder
 
         DB::table('tb_campaign_images')->insert([
             'campaign_id' => $campaignId,
-            'image' => 'campaign-sample.jpg',
+            'image' => 'campaign/login-bg.jpg',
             'caption' => 'Dokumentasi campaign',
             'is_primary' => 'yes',
             'created_at' => now(),
@@ -82,7 +82,7 @@ class CampaignSeeder extends Seeder
             'contact_number' => '081234567890',
             'address' => 'Alamat penerima manfaat',
             'description' => 'Data dummy beneficiary',
-            'document_path' => 'beneficiary.pdf',
+            'document_path' => 'campaign/login-bg.pdf',
             'created_at' => now(),
         ]);
     }

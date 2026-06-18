@@ -15,7 +15,14 @@
         <div class="p-8 space-y-8 flex-1">
             <div>
                 <h3 class="text-base font-bold text-[#2D1622] mb-4 border-l-4 border-[#2D1622] pl-3">Informasi Campaign</h3>
-                <div class="w-full h-48 bg-gray-200 rounded-2xl flex items-center justify-center text-gray-400 text-sm mb-6 font-medium border border-gray-300/60 shadow-inner">Foto campaign</div>
+                
+                <div class="w-full h-64 bg-gray-100 rounded-2xl overflow-hidden border border-gray-200 shadow-inner mb-6">
+                    <img id="mCampaignImage" src="" alt="Foto Utama Campaign" class="w-full h-full object-cover hidden">
+                    <div id="mCampaignImagePlaceholder" class="w-full h-full flex items-center justify-center text-gray-400 text-sm font-medium bg-gray-200">
+                        <i class="fa-regular fa-image text-xl mr-2"></i> Tidak ada foto dokumentasi campaign
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-6 text-sm">
                     <div><p class="text-xs text-gray-400">Nama Campaign</p><p id="cTitle" class="font-semibold text-gray-800 mt-1">-</p></div>
                     <div><p class="text-xs text-gray-400">Kategori</p><p id="cCategory" class="font-semibold text-gray-800 mt-1">-</p></div>
@@ -52,6 +59,16 @@
                 <h3 class="text-base font-bold text-[#2D1622] mb-4 border-l-4 border-[#2D1622] pl-3">Dokumen Pendukung</h3>
                 <div id="documentsContainer" class="space-y-2"></div>
             </div>
+
+            <div id="rejectReasonSection" class="hidden animate-fade-in">
+                <h3 class="text-base font-bold text-red-700 mb-3 border-l-4 border-red-600 pl-3">Catatan / Alasan Ditolak</h3>
+                <div class="bg-red-50/60 border border-red-200 rounded-2xl p-4 shadow-sm flex items-start space-x-3">
+                    <div class="text-red-500 mt-0.5"><i class="fa-solid fa-circle-exclamation text-base"></i></div>
+                    <div>
+                        <p id="rejectReasonText" class="text-sm text-gray-700 leading-relaxed font-medium">-</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="modalFooter" class="p-6 border-t border-gray-200 bg-white flex items-center justify-end space-x-3 sticky bottom-0">
@@ -61,6 +78,41 @@
                 <button type="button" onclick="submitVerification('rejected')" class="bg-[#FA6B6B] hover:bg-red-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm">Tolak Campaign</button>
                 <button type="button" onclick="submitVerification('approved')" class="bg-[#55A08E] hover:bg-teal-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm">Setujui Campaign</button>
             </form>
+        </div>
+    </div>
+</div>
+
+<div id="confirmApproveModal" class="hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-[#F8F9FA] rounded-2xl max-w-xl w-full p-6 shadow-xl border border-gray-100">
+        <div class="flex items-center space-x-3 border-b border-gray-200 pb-3 mb-4">
+            <div class="text-gray-700"><i class="fa-solid fa-circle-check text-lg"></i></div>
+            <h4 class="text-lg font-bold text-[#2D1622]">Konfirmasi Verifikasi Campaign</h4>
+        </div>
+        <p class="text-sm text-gray-600 mb-6">Apakah Anda yakin ingin memverifikasi campaign ini?</p>
+        <div class="flex justify-end space-x-2">
+            <button type="button" onclick="closeConfirmModal('approved')" class="px-5 py-2 bg-gray-400 hover:bg-gray-500 text-white text-xs font-semibold rounded-xl transition">Batalkan</button>
+            <button type="button" onclick="executeSubmit('approved')" class="px-5 py-2 bg-[#55A08E] hover:bg-teal-700 text-white text-xs font-semibold rounded-xl transition">Ya, Verifikasi</button>
+        </div>
+    </div>
+</div>
+
+<div id="confirmRejectModal" class="hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-[#F8F9FA] rounded-2xl max-w-xl w-full p-6 shadow-xl border border-gray-100">
+        <div class="flex items-center space-x-3 border-b border-gray-200 pb-3 mb-4">
+            <div class="text-gray-700"><i class="fa-solid fa-circle-xmark text-lg"></i></div>
+            <h4 class="text-lg font-bold text-[#2D1622]">Konfirmasi Penolakan Campaign</h4>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">Apakah Anda yakin ingin menolak campaign ini?</p>
+        
+        <div class="mb-6">
+            <label class="block text-xs font-semibold text-[#2D1622] mb-1">Alasan Penolakan <span class="text-red-500">*</span></label>
+            <textarea id="modalAdminNotes" rows="3" placeholder="Berikan catatan.." class="w-full px-3 py-2 bg-[#FBF4E4]/30 border border-amber-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2D1622] transition"></textarea>
+            <p id="rejectError" class="hidden text-xs text-red-500 mt-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Alasan penolakan wajib diisi!</p>
+        </div>
+
+        <div class="flex justify-end space-x-2">
+            <button type="button" onclick="closeConfirmModal('rejected')" class="px-5 py-2 bg-gray-400 hover:bg-gray-500 text-white text-xs font-semibold rounded-xl transition">Batalkan</button>
+            <button type="button" onclick="executeSubmit('rejected')" class="px-5 py-2 bg-[#FA6B6B] hover:bg-red-600 text-white text-xs font-semibold rounded-xl transition">Ya, Tolak</button>
         </div>
     </div>
 </div>

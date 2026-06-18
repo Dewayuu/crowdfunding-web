@@ -35,6 +35,12 @@
         </div>
     </form>
 
+    @if(session('success'))
+        <div class="mb-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm font-medium flex items-center shadow-xs animate-fade-in">
+            <i class="fa-solid fa-circle-check mr-2 text-base"></i> {{ session('success') }}
+        </div>
+    @endif
+
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -83,11 +89,8 @@
             </table>
         </div>
 
-        @if($campaigns->hasPages())
-            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50">
-                {{ $campaigns->links() }}
-            </div>
-        @endif
+        @include('layouts.pagination', ['items' => $campaigns])
+
     </div>
 </div>
 
@@ -109,6 +112,20 @@ function loadCampaignDetail(id) {
             document.getElementById('cDeadline').innerText = new Date(data.end_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
             document.getElementById('cTarget').innerText = 'Rp' + new Intl.NumberFormat('id-ID').format(data.target_amount);
             document.getElementById('cCreated').innerText = new Date(data.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            let imgElement = document.getElementById('mCampaignImage');
+            let placeholderElement = document.getElementById('mCampaignImagePlaceholder');
+
+            let primaryImage = data.images.find(img => img.is_primary === 'yes') || data.images[0];
+
+            if (primaryImage && primaryImage.image) {
+                imgElement.src = `/storage/${primaryImage.image}`;
+                imgElement.classList.remove('hidden');
+                placeholderElement.classList.add('hidden');
+            } else {
+                imgElement.classList.add('hidden');
+                placeholderElement.classList.remove('hidden');
+            }
 
             let statusDiv = document.getElementById('cStatus');
             if(data.verification_status === 'pending') {
@@ -180,22 +197,37 @@ function loadCampaignDetail(id) {
 
             let docContainer = document.getElementById('documentsContainer');
             docContainer.innerHTML = '';
-            if(data.user.documents && data.user.documents.length > 0) {
-                data.user.documents.forEach(doc => {
-                    docContainer.innerHTML += `
-                        <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
-                            <div class="flex items-center space-x-3">
-                                <div class="text-red-500 text-lg"><i class="fa-solid fa-file-pdf"></i></div>
-                                <div>
-                                    <p class="text-sm font-semibold text-gray-800 uppercase">${doc.document_type.replace('_', ' ')}</p>
-                                    <p class="text-xs text-gray-400">Berkas Pendukung Verifikasi Legalitas</p>
-                                </div>
+
+            if(data.beneficiary && data.beneficiary.document_path) {
+                let fileName = data.beneficiary.document_path.split('/').pop();
+
+                docContainer.innerHTML = `
+                    <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-gray-300 transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="text-red-500 text-lg"><i class="fa-solid fa-file-pdf"></i></div>
+                            <div>
+                                <p class="text-sm text-gray-800">${fileName}</p>
                             </div>
-                            <a href="/storage/documents/${doc.file}" download class="text-gray-400 hover:text-[#2D1622] transition"><i class="fa-solid fa-download"></i></a>
-                        </div>`;
-                });
+                        </div>
+                        <a href="/storage/${data.beneficiary.document_path}" download class="text-gray-400 hover:text-[#2D1622] transition-colors p-2 rounded-lg hover:bg-gray-50">
+                            <i class="fa-solid fa-download text-base"></i>
+                        </a>
+                    </div>`;
             } else {
-                docContainer.innerHTML = `<div class="p-4 bg-gray-50 rounded-xl text-center text-xs text-gray-400 border border-dashed">Tidak ada dokumen yang diunggah.</div>`;
+                docContainer.innerHTML = `
+                    <div class="p-4 bg-gray-50 rounded-xl text-center text-xs text-gray-400 border border-dashed border-gray-200">
+                        <i class="fa-regular fa-folder-open text-base mb-1 block text-gray-300"></i> Tidak ada dokumen pendukung yang diunggah.
+                    </div>`;
+            }
+
+            let rejectSection = document.getElementById('rejectReasonSection');
+            let rejectText = document.getElementById('rejectReasonText');
+
+            if (data.verification_status === 'rejected' && data.admin_notes) {
+                rejectText.innerText = data.admin_notes;
+                rejectSection.classList.remove('hidden'); // Membuka kotak merah catatan
+            } else {
+                rejectSection.classList.add('hidden'); // Menyembunyikan jika tidak ditolak
             }
 
             document.getElementById('verifyForm').action = `/admin/campaigns/${data.campaign_id}/verify`;
@@ -213,7 +245,44 @@ function closeModal() {
 
 function submitVerification(status) {
     document.getElementById('formStatus').value = status;
-    document.getElementById('verifyForm').submit();
+
+    if (status === 'approved') {
+        document.getElementById('confirmApproveModal').classList.remove('hidden');
+    } else if (status === 'rejected') {
+        document.getElementById('modalAdminNotes').value = '';
+        document.getElementById('rejectError').classList.add('hidden');
+        document.getElementById('confirmRejectModal').classList.remove('hidden');
+    }
+}
+
+function closeConfirmModal(status) {
+    if (status === 'approved') {
+        document.getElementById('confirmApproveModal').classList.add('hidden');
+    } else if (status === 'rejected') {
+        document.getElementById('confirmRejectModal').classList.add('hidden');
+    }
+}
+
+function executeSubmit(status) {
+    let form = document.getElementById('verifyForm');
+
+    if (status === 'rejected') {
+        let notesValue = document.getElementById('modalAdminNotes').value.trim();
+        let errorTxt = document.getElementById('rejectError');
+
+        if (notesValue === '') {
+            errorTxt.classList.remove('hidden');
+            return;
+        }
+
+        let inputNotes = document.createElement('input');
+        inputNotes.type = 'hidden';
+        inputNotes.name = 'admin_notes';
+        inputNotes.value = notesValue;
+        form.appendChild(inputNotes);
+    }
+
+    form.submit();
 }
 </script>
 @endsection
