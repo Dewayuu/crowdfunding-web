@@ -9,10 +9,8 @@ class Campaign extends Model
 {
     use HasFactory;
 
-    // 1. Deklarasikan nama tabel kustom sesuai PDM kalian
     protected $table = 'tb_campaigns';
 
-    // 2. Tentukan primary key tabel ini
     protected $primaryKey = 'campaign_id';
 
     /**
@@ -75,5 +73,10 @@ class Campaign extends Model
     public function beneficiary()
     {
         return $this->hasOne(CampaignBeneficiary::class, 'campaign_id', 'campaign_id');
+    }
+
+    public function disbursements()
+    {
+        return $this->hasMany(CampaignDisbursement::class, 'campaign_id', 'campaign_id');
     }
 }

@@ -29,6 +29,6 @@ class CampaignDisbursement extends Model
 
     public function bankAccount()
     {
-        return $this->belongsTo(UserBankAccount::class, 'user_bank_account_id', 'user_bank_account_id');
+        return $this->belongsTo(UserBankAccount::class, 'user_bank_account_id', 'user_id');
     }
 }
