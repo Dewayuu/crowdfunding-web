@@ -26,6 +26,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/pengajuan-dana', [DisbursementController::class, 'index'])->name('admin.disbursements');
     Route::get('/admin/disbursements/{id}/{type}', [DisbursementController::class, 'show'])->name('admin.disbursements.show');
     Route::post('/admin/disbursements/{id}/{type}/update', [DisbursementController::class, 'update'])->name('admin.disbursements.update');
+    Route::get('/admin/refunds/campaign/{campaignId}', [DisbursementController::class, 'refundDetail'])->name('admin.disbursements.refund-detail');
+    Route::post('/admin/refunds/process/{refundId}', [DisbursementController::class, 'processRefund'])->name('admin.disbursements.process-refund');
+    Route::get('/admin/refunds/campaign/{campaignId}/export', [DisbursementController::class, 'exportRefundAccounts'])->name('admin.disbursements.export-refund');
 });
 
 // USER

@@ -26,6 +26,11 @@ class DonationRefund extends Model
 
     public function bankAccount()
     {
-        return $this->belongsTo(UserBankAccount::class, 'user_bank_account_id', 'user_bank_account_id');
+        return $this->belongsTo(UserBankAccount::class, 'user_bank_account_id', 'user_id');
+    }
+
+    public function campaign()
+    {
+        return $this->hasOneThrough(Campaign::class, Donation::class, 'donation_id', 'campaign_id', 'donation_id', 'campaign_id');
     }
 }

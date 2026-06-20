@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\CampaignDisbursement;
 use App\Models\DonationRefund;
+use App\Models\Donation;
+use App\Models\Campaign;
 
 class DisbursementController extends Controller
 {
@@ -30,17 +32,32 @@ class DisbursementController extends Controller
         $refunds = DB::table('tb_donation_refunds as tr')
             ->join('tb_donations as d', 'tr.donation_id', '=', 'd.donation_id')
             ->join('tb_campaigns as c', 'd.campaign_id', '=', 'c.campaign_id')
-            ->join('tb_users as u', 'd.user_id', '=', 'u.user_id') 
+            ->join('tb_users as u', 'c.user_id', '=', 'u.user_id')
             ->leftJoin('tb_campaign_categories as cat', 'c.category_id', '=', 'cat.category_id')
             ->select(
-                'tr.refund_id as id',
+                'c.campaign_id as id',
                 'c.title as campaign_title',
                 'cat.category_name',
-                'u.username as owner_name', 
+                'u.username as owner_name',
                 DB::raw("'Refund Dana' as jenis"),
-                'tr.refund_status as status',
-                'tr.created_at as tanggal',
+
+                DB::raw("
+                    CASE
+                        WHEN SUM(CASE WHEN tr.refund_status='pending' THEN 1 ELSE 0 END) > 0
+                        THEN 'pending'
+                        ELSE 'success'
+                    END as status
+                "),
+
+                DB::raw('MAX(tr.created_at) as tanggal'),
+
                 DB::raw("'refund' as type_code")
+            )
+            ->groupBy(
+                'c.campaign_id',
+                'c.title',
+                'cat.category_name',
+                'u.username'
             );
 
         $combinedQuery = $disbursements->unionAll($refunds);
@@ -70,6 +87,114 @@ class DisbursementController extends Controller
                           ->withQueryString();
 
         return view('admin.disbursements.index', ['disbursements' => $data]);
+    }
+
+    public function refundDetail(Request $request, $campaignId)
+    {
+        $campaign = Campaign::with([
+            'category',
+            'user.detailFoundation',
+            'user.detailCommunity',
+            'user.detailCorporate',
+            'user.detailIndividual'
+        ])->findOrFail($campaignId);
+
+        $user = $campaign->user;
+
+        $refundItemsQuery = DB::table('tb_donation_refunds as r')
+            ->join('tb_donations as d', 'r.donation_id', '=', 'd.donation_id')
+            ->leftJoin('tb_user_bank_accounts as uba', 'r.user_bank_account_id', '=', 'uba.user_id')
+            ->where('d.campaign_id', $campaignId)
+            ->select(
+                'r.*',
+                'd.donation_id',
+                'd.donor_name',
+                'd.amount',
+                'd.payment_method',
+                'd.created_at as donation_date',
+                'uba.bank_name',
+                'uba.account_number',
+                'uba.account_name'
+            );
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $refundItemsQuery->where(function($q) use ($search) {
+                $q->where('d.donor_name', 'LIKE', "%{$search}%")
+                  ->orWhere('d.donation_id', 'LIKE', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $refundItemsQuery->where('r.refund_status', $request->status);
+        }
+
+        $refundItems = $refundItemsQuery->orderBy('r.created_at', 'desc')->paginate(10)->withQueryString();
+
+        $totalDonatur = $refundItems->total();
+
+        $totalRefundAmount = DB::table('tb_donation_refunds as r')
+            ->join('tb_donations as d', 'r.donation_id', '=', 'd.donation_id')
+            ->where('d.campaign_id', $campaignId)
+            ->sum('d.amount');
+
+        $processedCount = DB::table('tb_donation_refunds as r')
+            ->join('tb_donations as d', 'r.donation_id', '=', 'd.donation_id')
+            ->where('d.campaign_id', $campaignId)
+            ->where('r.refund_status', 'success')
+            ->count();
+
+        $ownerName = $user->username;
+        $identityLabel = 'Dokumen';
+        $identityValue = '-';
+
+        switch ($user->entity_type) {
+
+            case 'individual':
+                $ownerName = $user->detailIndividual?->full_name ?? $user->username;
+
+                $identityLabel = 'NIK';
+                $identityValue = $user->detailIndividual?->national_id_number ?? '-';
+                break;
+
+            case 'foundation':
+                $ownerName = $user->detailFoundation?->foundation_name ?? $user->username;
+
+                $identityLabel = 'SK Kemenkumham';
+                $identityValue = $user->detailFoundation?->sk_kemenkumham_number ?? '-';
+                break;
+
+            case 'corporate':
+                $ownerName = $user->detailCorporate?->company_name ?? $user->username;
+
+                $identityLabel = 'NIB / NPWP';
+                $identityValue =
+                    ($user->detailCorporate?->nib ?? '-') .
+                    ' / ' .
+                    ($user->detailCorporate?->npwp ?? '-');
+                break;
+
+            case 'community':
+                $ownerName = $user->detailCommunity?->community_name ?? $user->username;
+
+                $identityLabel = 'Tipe Komunitas';
+                $identityValue = $user->detailCommunity?->community_type ?? '-';
+                break;
+        }
+
+        return view(
+            'admin.disbursements.refund-detail',
+            compact(
+                'campaign',
+                'refundItems',
+                'ownerName',
+                'identityLabel',
+                'identityValue',
+                'totalDonatur',
+                'totalRefundAmount',
+                'processedCount'
+            )
+        );
     }
 
     public function show($id, $type)
@@ -223,5 +348,81 @@ class DisbursementController extends Controller
         }
 
         return redirect()->back()->with('success', 'Status pengajuan dana berhasil diperbarui!');
+    }
+
+    public function processRefund(Request $request, $refundId)
+    {
+        $request->validate([
+            'transfer_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $refund = DB::table('tb_donation_refunds')->where('refund_id', $refundId)->first();
+        if (!$refund) {
+            return redirect()->back()->with('error', 'Data refund tidak ditemukan.');
+        }
+
+        $path = $request->file('transfer_proof')->store('transfer-proofs', 'public');
+
+        DB::table('tb_donation_refunds')->where('refund_id', $refundId)->update([
+            'refund_status'  => 'success',
+            'transfer_proof' => $path,
+            'processed_at'   => now()
+        ]);
+
+        return redirect()->back()->with('success', 'Bukti transfer refund donatur berhasil dikirim!');
+    }
+
+    public function exportRefundAccounts($campaignId)
+    {
+        $campaign = Campaign::findOrFail($campaignId);
+
+        $refunds = DB::table('tb_donation_refunds as r')
+            ->join('tb_donations as d', 'r.donation_id', '=', 'd.donation_id')
+            ->leftJoin('tb_user_bank_accounts as uba', 'r.user_bank_account_id', '=', 'uba.user_id')
+            ->where('d.campaign_id', $campaignId)
+            ->select(
+                'd.donation_id',
+                'd.donor_name',
+                'd.amount',
+                'uba.bank_name',
+                'uba.account_number',
+                'uba.account_name',
+                'r.refund_status'
+            )
+            ->orderBy('r.created_at', 'asc')
+            ->get();
+
+        $fileName = 'Daftar_Refund_Rekening_Campaign_' . $campaignId . '.csv';
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function() use($refunds) {
+            $file = fopen('php://output', 'w');
+            
+            fputcsv($file, ['No', 'ID Donasi', 'Nama Donatur', 'Nama Bank', 'Nomor Rekening', 'Atas Nama', 'Nominal Refund', 'Status']);
+
+            foreach ($refunds as $index => $item) {
+                fputcsv($file, [
+                    $index + 1,
+                    '#DON-' . $item->donation_id,
+                    $item->donor_name,
+                    $item->bank_name ?? '-',
+                    $item->account_number ? "'" . $item->account_number : '-', 
+                    $item->account_name ?? '-',
+                    number_format($item->amount, 0, '', ''), 
+                    $item->refund_status === 'success' ? 'Selesai' : ($item->refund_status === 'pending' ? 'Menunggu' : 'Gagal')
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

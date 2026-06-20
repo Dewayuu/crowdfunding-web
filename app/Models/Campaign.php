@@ -79,4 +79,9 @@ class Campaign extends Model
     {
         return $this->hasMany(CampaignDisbursement::class, 'campaign_id', 'campaign_id');
     }
+
+    public function donations()
+    {
+        return $this->hasMany(Donation::class, 'campaign_id', 'campaign_id');
+    }
 }

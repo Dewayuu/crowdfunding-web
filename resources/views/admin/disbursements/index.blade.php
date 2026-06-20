@@ -83,12 +83,12 @@
                                         Disetujui
                                     </span>
 
-                                @elseif($item->status === 'transferred')
+                                @elseif($item->status === 'transferred' || $item->status === 'success')
                                     <span class="inline-flex items-center px-4 py-1 text-xs font-medium bg-[#E6ECE9] text-[#55A08E] rounded-full">
-                                        Dana Ditransfer
+                                        {{ $item->type_code === 'refund' ? 'Selesai' : 'Dana Ditransfer' }}
                                     </span>
 
-                                @elseif($item->status === 'rejected')
+                                @elseif($item->status === 'rejected' || $item->status === 'failed')
                                     <span class="inline-flex items-center px-4 py-1 text-xs font-medium bg-[#FDE8E7] text-[#FA6B6B] rounded-full">
                                         Ditolak
                                     </span>
@@ -98,9 +98,23 @@
                                 {{ date('d M Y', strtotime($item->tanggal)) }}
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <button type="button" onclick="loadDisbursementDetail({{ $item->id }}, '{{ $item->type_code }}')" class="inline-flex items-center justify-center p-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-400 hover:text-[#2D1622] hover:border-gray-300 transition shadow-sm">
-                                    <i class="fa-regular fa-eye text-sm"></i>
-                                </button>
+                                @if($item->type_code === 'refund')
+                                    <a href="{{ route('admin.disbursements.refund-detail', ['campaignId' => $item->id]) }}"
+                                    class="inline-flex items-center justify-center p-2 rounded-lg bg-gray-50 border border-gray-200">
+                                        <i class="fa-regular fa-eye text-sm"></i>
+                                    </a>
+
+                                    @else
+
+                                    <button
+                                    type="button"
+                                    onclick="loadDisbursementDetail({{ $item->id }}, '{{ $item->type_code }}')"
+                                    class="inline-flex items-center justify-center p-2 rounded-lg bg-gray-50 border border-gray-200"
+                                    >
+                                        <i class="fa-regular fa-eye text-sm"></i>
+                                    </button>
+
+                                    @endif
                             </td>
                         </tr>
                     @empty
