@@ -26,7 +26,7 @@
                 <h2 class="text-3xl font-bold text-[#2D1622] mb-2">Masuk</h2>
                 <p class="text-sm text-gray-600 mb-8">
                     Belum memiliki akun? 
-                    <a href="#" class="text-[#F15A24] font-medium hover:underline">Daftar sekarang</a>
+                    <a href="{{ route('register') }}" class="text-[#F15A24] font-medium hover:underline">Daftar sekarang</a>
                 </p>
 
                 @if ($errors->any())
