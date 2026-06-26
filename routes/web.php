@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\DisbursementController;
+use App\Http\Controllers\User\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -40,3 +41,6 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/user/dashboard', function () {
     return view('user.dashboard');
 })->middleware('auth')->name('user.dashboard');
+
+Route::get('/user/profile', [ProfileController::class, 'edit'])->name('user.profile.edit');
+Route::put('/user/profile', [ProfileController::class, 'update'])->name('user.profile.update');
