@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController; 
 use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\DisbursementController;
+use App\Http\Controllers\User\UserCampaignController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,6 +33,25 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // USER
-Route::get('/user/dashboard', function () {
-    return view('user.dashboard');
-})->middleware('auth')->name('user.dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/dashboard', function () {
+        return view('user.dashboard');
+    })->name('user.dashboard');
+
+    Route::get('/user/campaigns', [UserCampaignController::class, 'index'])->name('user.campaigns');
+
+    // route sementara buat cek halaman
+    Route::get('/user/campaigns/{id}/detail', [UserCampaignController::class, 'ownerDetail'])->name('user.campaigns.owner-detail');
+
+    // route sementara buat cek halaman
+    Route::get('/user/campaigns/{id}/edit', function($id) {
+        return response('<h1 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#4A5568;">Halaman Kosong (Placeholder Form Edit Campaign #ID-' . $id . ')</h1>');
+    })->name('user.campaigns.edit');
+    
+    Route::middleware(['check.eligibility'])->group(function () {
+        // route sementara buat cek halaman, nanti bisa diubah sesuaiin sama rute create campaign yg udah jadi
+        Route::get('/user/campaigns/create', function() {
+            return view('user.campaigns.create'); 
+        })->name('user.campaigns.create');
+    });
+});
