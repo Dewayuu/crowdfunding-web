@@ -33,11 +33,17 @@ class UserCampaignController extends Controller
             });
         }
 
-        // Urutkan dari yang terbaru dan beri paginasi
         $campaigns = $query->orderBy('created_at', 'DESC')
                            ->paginate(6)
                            ->withQueryString();
 
         return view('user.campaigns.index', compact('campaigns'));
+    }
+
+    public function ownerDetail($id)
+    {
+        $campaign = Campaign::findOrFail($id);
+
+        return view('user.campaigns.owner-detail', compact('campaign'));
     }
 }
