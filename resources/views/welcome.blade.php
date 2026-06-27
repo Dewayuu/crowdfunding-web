@@ -55,7 +55,7 @@
                 </p>
 
                 <div class="flex flex-wrap gap-6">
-                    <a href="#campaign" class="bg-[#F1642E] px-8 py-4 rounded-lg font-bold text-white hover:opacity-90 transition">
+                    <a href="{{ route('campaigns.show', 1) }}" class="bg-[#F1642E] px-8 py-4 rounded-lg font-bold text-white hover:opacity-90 transition">
                         Lihat Campaign
                     </a>
                     <a href="#" class="border border-white/80 px-8 py-4 rounded-lg font-bold text-white hover:bg-white hover:text-[#351528] transition">
