@@ -31,14 +31,15 @@ class ProfileController extends Controller
             'bank_name'        => ['nullable', 'string', 'max:50'],
             'account_number'   => ['nullable', 'string', 'max:20'],
             'account_holder'   => ['nullable', 'string', 'max:255'],
+            'bank_proof'       => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
         ]);
 
         // Cek password lama kalau mau ganti password
         if ($request->filled('password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
+            if (empty($request->current_password) || !Hash::check($request->current_password, $user->getAuthPassword())) {
                 return response()->json([
                     'success' => false,
-                    'errors'  => ['current_password' => 'Password lama tidak sesuai.']
+                    'errors'  => ['current_password' => 'Password lama tidak sesuai.'],
                 ], 422);
             }
         }
@@ -64,14 +65,29 @@ class ProfileController extends Controller
 
         // Update rekening bank
         if ($request->filled('bank_name') && $request->filled('account_number') && $request->filled('account_holder')) {
+            $bankData = [
+                'bank_name'      => $request->bank_name,
+                'account_number' => $request->account_number,
+                'account_name'   => $request->account_holder,
+            ];
+
             UserBankAccount::updateOrCreate(
                 ['user_id' => $user->user_id],
-                [
-                    'bank_name'      => $request->bank_name,
-                    'account_number' => $request->account_number,
-                    'account_name'   => $request->account_holder,
-                ]
+                $bankData
             );
+
+            // Simpan dokumen buku tabungan baru kalau ada
+            if ($request->hasFile('bank_proof')) {
+                $bankProofPath = $request->file('bank_proof')->store('documents/bank_proof', 'public');
+                $user->documents()->updateOrCreate(
+                    ['document_type' => 'bank_book'],
+                    [
+                        'file'                => $bankProofPath,
+                        'uploaded_at'         => now(),
+                        'verification_status' => 'pending',
+                    ]
+                );
+            }
         }
 
         return response()->json(['success' => true]);

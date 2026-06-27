@@ -59,44 +59,42 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap</label>
                             <input type="text" name="username"
-                                   value="{{ old('username', Auth::user()->username) }}"
+                                   x-model="username"
                                    placeholder="Nama Pengguna"
-                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
-                            @error('username')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
+                                   :class="errors.username ? 'border-red-400' : 'border-gray-300'"
+                                   class="w-full px-4 py-2.5 border rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                            <p x-show="errors.username" x-text="Array.isArray(errors.username) ? errors.username[0] : errors.username" class="text-red-500 text-xs mt-1"></p>
                         </div>
 
                         {{-- Email --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
                             <input type="email" name="email"
-                                   value="{{ old('email', Auth::user()->email) }}"
+                                   x-model="email"
                                    placeholder="Email Pengguna"
-                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
-                            @error('email')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
+                                   :class="errors.email ? 'border-red-400' : 'border-gray-300'"
+                                   class="w-full px-4 py-2.5 border rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                            <p x-show="errors.email" x-text="Array.isArray(errors.email) ? errors.email[0] : errors.email" class="text-red-500 text-xs mt-1"></p>
                         </div>
 
                         {{-- Nomor Telepon --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Telepon</label>
                             <input type="text" name="contact_number"
-                                   value="{{ old('contact_number', Auth::user()->contact_number) }}"
+                                   x-model="contact_number"
                                    placeholder="Nomor Telepon Pengguna"
-                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
-                            @error('contact_number')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
+                                   :class="errors.contact_number ? 'border-red-400' : 'border-gray-300'"
+                                   class="w-full px-4 py-2.5 border rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                            <p x-show="errors.contact_number" x-text="Array.isArray(errors.contact_number) ? errors.contact_number[0] : errors.contact_number" class="text-red-500 text-xs mt-1"></p>
                         </div>
 
                         {{-- Bio --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Bio</label>
                             <textarea name="bio" rows="3"
+                                      x-model="bio"
                                       placeholder="Bio Pengguna"
-                                      class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition resize-none">{{ old('bio', Auth::user()->bio) }}</textarea>
+                                      class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition resize-none"></textarea>
                             @error('bio')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -117,16 +115,18 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Password Lama</label>
                                 <div class="relative">
                                     <input :type="showOld ? 'text' : 'password'" name="current_password"
+                                           x-model="currentPassword"
                                            placeholder="Password Lama"
-                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition pr-10">
+                                           :class="errors.current_password ? 'border-red-400' : 'border-gray-300'"
+                                           class="w-full px-4 py-2.5 border rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition pr-10">
                                     <button type="button" @click="showOld = !showOld"
                                             class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
                                         <i :class="showOld ? 'fa-eye' : 'fa-eye-slash'" class="fa-regular text-sm"></i>
                                     </button>
                                 </div>
-                                @error('current_password')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                                <p x-show="errors.current_password"
+                                   x-text="Array.isArray(errors.current_password) ? errors.current_password[0] : errors.current_password"
+                                   class="text-red-500 text-xs mt-1"></p>
                             </div>
 
                             {{-- Password Baru --}}
@@ -136,16 +136,17 @@
                                     <input :type="showNew ? 'text' : 'password'" name="password"
                                            x-model="newPassword"
                                            placeholder="Password Baru"
-                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition pr-10">
+                                           :class="errors.password ? 'border-red-400' : 'border-gray-300'"
+                                           class="w-full px-4 py-2.5 border rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition pr-10">
                                     <button type="button" @click="showNew = !showNew"
                                             class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
                                         <i :class="showNew ? 'fa-eye' : 'fa-eye-slash'" class="fa-regular text-sm"></i>
                                     </button>
                                 </div>
+                                <p x-show="errors.password"
+                                   x-text="Array.isArray(errors.password) ? errors.password[0] : errors.password"
+                                   class="text-red-500 text-xs mt-1"></p>
                                 <p class="text-xs text-gray-400 mt-1">Kosongkan jika tidak ingin mengubah password</p>
-                                @error('password')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
                             </div>
 
                             {{-- Konfirmasi Password Baru --}}
@@ -205,6 +206,18 @@
                                        placeholder="Nama Pemilik Rekening"
                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
                                 @error('account_holder')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Foto Buku Tabungan / Bukti Rekening</label>
+                                @if(Auth::user()->bankAccount)
+                                    <p class="text-xs text-gray-400 mb-2">Sudah ada foto sebelumnya. Upload baru hanya jika ingin mengganti.</p>
+                                @endif
+                                <input type="file" name="bank_proof" accept=".jpg,.jpeg,.png,.pdf"
+                                       class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+                                @error('bank_proof')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -295,18 +308,22 @@ function editProfile() {
         showNew: false,
         showConfirm: false,
         previewPhoto: null,
+        errors: {},
+        currentPassword: '',
         newPassword: '',
         confirmPassword: '',
+        username: '{{ Auth::user()->username }}',
+        email: '{{ Auth::user()->email }}',
+        contact_number: '{{ Auth::user()->contact_number }}',
+        bio: '{{ Auth::user()->bio }}',
 
         handleSubmit() {
-            // Cegah submit langsung, munculkan confirm modal
             this.showConfirmModal = true;
         },
 
         submitForm() {
             this.showConfirmModal = false;
 
-            // Cek password match dulu
             if (this.newPassword && this.newPassword !== this.confirmPassword) {
                 this.showErrorModal = true;
                 return;
@@ -314,11 +331,30 @@ function editProfile() {
 
             const form = document.querySelector('form');
             const formData = new FormData(form);
+            formData.set('username', this.username);
+            formData.set('email', this.email);
+            formData.set('contact_number', this.contact_number);
+            formData.set('bio', this.bio);
+            formData.set('current_password', this.currentPassword);
+            formData.set('password', this.newPassword);
+            formData.set('password_confirmation', this.confirmPassword);
+            formData.set('bank_name', document.querySelector('select[name="bank_name"]').value);
+            formData.set('account_number', document.querySelector('input[name="account_number"]').value);
+            formData.set('account_holder', document.querySelector('input[name="account_holder"]').value);
+
+            // Tambahkan file foto jika ada
+            const photoInput = document.querySelector('input[name="profile_photo"]');
+            if (photoInput && photoInput.files[0]) {
+                formData.set('profile_photo', photoInput.files[0]);
+            }
+
+            formData.append('_method', 'PUT');
 
             fetch('{{ route('user.profile.update') }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json'
                 },
                 body: formData
             })
@@ -326,6 +362,9 @@ function editProfile() {
             .then(data => {
                 if (data.success) {
                     this.showSuccessModal = true;
+                } else if (data.errors) {
+                    this.errors = data.errors;
+                    this.showErrorModal = true;
                 } else {
                     this.showErrorModal = true;
                 }
