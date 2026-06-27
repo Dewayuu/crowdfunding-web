@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController; 
 use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\DisbursementController;
+use App\Http\Controllers\User\UserCampaignController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,6 +33,10 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // USER
-Route::get('/user/dashboard', function () {
-    return view('user.dashboard');
-})->middleware('auth')->name('user.dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/dashboard', function () {
+        return view('user.dashboard');
+    })->name('user.dashboard');
+
+    Route::get('/user/campaigns', [UserCampaignController::class, 'index'])->name('user.campaigns');
+});
