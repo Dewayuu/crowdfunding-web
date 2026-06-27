@@ -35,6 +35,15 @@ class UserSeeder extends Seeder
             'gender' => 'male',
         ]);
 
+        DB::table('tb_user_documents')->insert([
+            'user_id' => $individualId,
+            'document_type' => 'ktp', 
+            'file' => 'documents/ktp_dummy.jpg', 
+            'verification_status' => 'approved', 
+            'rejection_reason' => null,
+            'uploaded_at' => now(),
+        ]);
+
         $foundationId = DB::table('tb_users')->insertGetId([
             'email' => 'foundation@example.com',
             'password' => Hash::make('user123'),
