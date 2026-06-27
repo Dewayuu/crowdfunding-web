@@ -8,15 +8,14 @@ use App\Http\Controllers\Admin\DisbursementController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\UserCampaignController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\PublicCampaignController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 // DETAIL CAMPAIGN PUBLIK
-Route::get('/campaigns/{id}', function ($id) {
-    return view('campaigns.show');
-})->name('campaigns.show');
+Route::get('/campaigns/{id}', [PublicCampaignController::class, 'show'])->name('campaigns.show');
 
 // REGISTER
 Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
@@ -42,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     Route::get('/admin/users/{id}', [UserController::class, 'show'])->name('admin.users.show');
     Route::post('/admin/users/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
-    
+
     Route::get('/admin/pengajuan-dana', [DisbursementController::class, 'index'])->name('admin.disbursements');
     Route::get('/admin/disbursements/{id}/{type}', [DisbursementController::class, 'show'])->name('admin.disbursements.show');
     Route::post('/admin/disbursements/{id}/{type}/update', [DisbursementController::class, 'update'])->name('admin.disbursements.update');
