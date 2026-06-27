@@ -3,277 +3,240 @@
 @section('title', 'Manage User')
 
 @section('content')
-@php
-    $users = [
-        [
-            'initial' => 'SR',
-            'name' => 'Siti Rahma',
-            'email' => 'siti12@gmail.com',
-            'role' => 'User',
-            'role_color' => 'bg-[#A3B565] text-white',
-            'status' => 'Aktif',
-            'status_color' => 'bg-[#F1642E] text-white',
-            'joined' => 'Jan, 2024',
-            'campaign' => 3,
-            'total_donasi' => 'Rp300.000',
-            'rekening' => 'Lengkap',
-            'rekening_color' => 'bg-[#A5A5A5] text-white',
-        ],
-        [
-            'initial' => 'AD',
-            'name' => 'Admin Utama',
-            'email' => 'admin@gmail.com',
-            'role' => 'Admin',
-            'role_color' => 'bg-[#C4C3E3] text-white',
-            'status' => 'Tidak Aktif',
-            'status_color' => 'bg-[#FCD99D] text-white',
-            'joined' => 'Jan, 2024',
-            'campaign' => 0,
-            'total_donasi' => '-',
-            'rekening' => 'Tidak Berlaku',
-            'rekening_color' => 'bg-[#504E76] text-white',
-        ],
-        [
-            'initial' => 'BR',
-            'name' => 'Budi Rahma',
-            'email' => 'budi@gmail.com',
-            'role' => 'User',
-            'role_color' => 'bg-[#A3B565] text-white',
-            'status' => 'Tidak Aktif',
-            'status_color' => 'bg-[#F1642E] text-white',
-            'joined' => 'Jan, 2024',
-            'campaign' => 3,
-            'total_donasi' => 'Rp300.000',
-            'rekening' => 'Belum Lengkap',
-            'rekening_color' => 'bg-[#351528] text-white',
-        ],
-    ];
+<div class="p-6 space-y-6">
 
-    for ($i = 0; $i < 7; $i++) {
-        $users[] = [
-            'initial' => 'SR',
-            'name' => 'Siti Rahma',
-            'email' => 'siti12@gmail.com',
-            'role' => 'User',
-            'role_color' => 'bg-[#A3B565] text-white',
-            'status' => 'Tidak Aktif',
-            'status_color' => 'bg-[#F1642E] text-white',
-            'joined' => 'Jan, 2024',
-            'campaign' => 3,
-            'total_donasi' => 'Rp300.000',
-            'rekening' => 'Lengkap',
-            'rekening_color' => 'bg-[#A5A5A5] text-white',
-        ];
-    }
-@endphp
-
-<div class="max-w-7xl mx-auto">
-    <h1 class="text-3xl font-bold text-[#2D1622] tracking-wide mb-8">Manage User</h1>
-
-    {{-- Search dan Filter --}}
-    <form action="{{ route('admin.users') }}" method="GET" class="mb-4">
-        <div class="flex flex-col lg:flex-row bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-            <div class="flex-1 relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
-                    <i class="fa-solid fa-magnifying-glass text-sm"></i>
-                </span>
-                <input
-                    type="text"
-                    name="search"
-                    value="{{ request('search') }}"
-                    placeholder="Cari nama atau email user..."
-                    class="w-full pl-11 pr-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none"
-                >
-            </div>
-
-            <div class="relative w-full lg:w-64 border-t lg:border-t-0 lg:border-l border-gray-200">
-                <select
-                    name="rekening"
-                    onchange="this.form.submit()"
-                    class="w-full appearance-none px-4 py-3 bg-white text-sm text-gray-400 focus:outline-none pr-10"
-                >
-                    <option value="">Semua Data Rekening</option>
-                    <option value="lengkap" {{ request('rekening') == 'lengkap' ? 'selected' : '' }}>Lengkap</option>
-                    <option value="belum_lengkap" {{ request('rekening') == 'belum_lengkap' ? 'selected' : '' }}>Belum Lengkap</option>
-                    <option value="tidak_berlaku" {{ request('rekening') == 'tidak_berlaku' ? 'selected' : '' }}>Tidak Berlaku</option>
-                </select>
-                <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-300 pointer-events-none">
-                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                </span>
-            </div>
-
-            <div class="relative w-full lg:w-52 border-t lg:border-t-0 lg:border-l border-gray-200">
-                <select
-                    name="role"
-                    onchange="this.form.submit()"
-                    class="w-full appearance-none px-4 py-3 bg-white text-sm text-gray-400 focus:outline-none pr-10"
-                >
-                    <option value="">Semua Role</option>
-                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                    <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
-                </select>
-                <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-300 pointer-events-none">
-                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                </span>
-            </div>
-
-            <div class="relative w-full lg:w-52 border-t lg:border-t-0 lg:border-l border-gray-200">
-                <select
-                    name="status"
-                    onchange="this.form.submit()"
-                    class="w-full appearance-none px-4 py-3 bg-white text-sm text-gray-400 focus:outline-none pr-10"
-                >
-                    <option value="">Semua Status</option>
-                    <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                    <option value="tidak_aktif" {{ request('status') == 'tidak_aktif' ? 'selected' : '' }}>Tidak Aktif</option>
-                </select>
-                <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-300 pointer-events-none">
-                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                </span>
-            </div>
+    {{-- Header --}}
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Manage User</h1>
+            <p class="text-sm text-gray-500 mt-1">
+                Kelola data user, role, status akun, dan kelengkapan data rekening.
+            </p>
         </div>
-    </form>
+    </div>
+
+    {{-- Summary Cards --}}
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+            <p class="text-sm text-gray-500">Total User</p>
+            <h2 class="text-2xl font-bold text-gray-800 mt-2">
+                {{ $summary['total_users'] }}
+            </h2>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+            <p class="text-sm text-gray-500">User Aktif</p>
+            <h2 class="text-2xl font-bold text-emerald-600 mt-2">
+                {{ $summary['active_users'] }}
+            </h2>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+            <p class="text-sm text-gray-500">Data Rekening Lengkap</p>
+            <h2 class="text-2xl font-bold text-blue-600 mt-2">
+                {{ $summary['complete_bank_accounts'] }}
+            </h2>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+            <p class="text-sm text-gray-500">Belum Lengkap</p>
+            <h2 class="text-2xl font-bold text-orange-500 mt-2">
+                {{ $summary['incomplete_bank_accounts'] }}
+            </h2>
+        </div>
+    </div>
+
+    {{-- Filter --}}
+    <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+        <form method="GET" action="{{ route('admin.users') }}">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Cari User</label>
+                    <input type="text"
+                           name="q"
+                           value="{{ request('q') }}"
+                           placeholder="Cari nama atau email..."
+                           class="w-full rounded-xl border-gray-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Role</label>
+                    <select name="role"
+                            class="w-full rounded-xl border-gray-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                        <option value="">Semua Role</option>
+                        <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                        <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>User</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Status Akun</label>
+                    <select name="status"
+                            class="w-full rounded-xl border-gray-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                        <option value="">Semua Status</option>
+                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Aktif</option>
+                        <option value="suspended" {{ request('status') === 'suspended' ? 'selected' : '' }}>Tidak Aktif</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Data Rekening</label>
+                    <select name="bank_status"
+                            class="w-full rounded-xl border-gray-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                        <option value="">Semua Data</option>
+                        <option value="complete" {{ request('bank_status') === 'complete' ? 'selected' : '' }}>Lengkap</option>
+                        <option value="incomplete" {{ request('bank_status') === 'incomplete' ? 'selected' : '' }}>Belum Lengkap</option>
+                        <option value="not_applicable" {{ request('bank_status') === 'not_applicable' ? 'selected' : '' }}>Tidak Berlaku</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 mt-5">
+                <button type="submit"
+                        class="px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">
+                    Terapkan Filter
+                </button>
+
+                <a href="{{ route('admin.users') }}"
+                   class="px-5 py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-semibold hover:bg-gray-200">
+                    Reset
+                </a>
+            </div>
+        </form>
+    </div>
 
     {{-- Table --}}
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-800">Daftar User</h2>
+                <p class="text-sm text-gray-500">
+                    Data user diambil dari database sistem HatiNurani.
+                </p>
+            </div>
+        </div>
+
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-[#F6ECEF] border-b border-gray-200">
-                        <th class="px-5 py-4 text-xs font-bold uppercase text-[#2D1622]">User</th>
-                        <th class="px-5 py-4 text-xs font-bold uppercase text-[#2D1622]">Role</th>
-                        <th class="px-5 py-4 text-xs font-bold uppercase text-[#2D1622]">Status Akun</th>
-                        <th class="px-5 py-4 text-xs font-bold uppercase text-[#2D1622]">Bergabung</th>
-                        <th class="px-5 py-4 text-xs font-bold uppercase text-[#2D1622] text-center">Campaign</th>
-                        <th class="px-5 py-4 text-xs font-bold uppercase text-[#2D1622] text-center">Total Donasi</th>
-                        <th class="px-5 py-4 text-xs font-bold uppercase text-[#2D1622] text-center">Data Rekening</th>
-                        <th class="px-5 py-4 text-xs font-bold uppercase text-[#2D1622] text-center">Aksi</th>
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                    <tr>
+                        <th class="px-5 py-4">User</th>
+                        <th class="px-5 py-4">Role</th>
+                        <th class="px-5 py-4">Status Akun</th>
+                        <th class="px-5 py-4">Bergabung</th>
+                        <th class="px-5 py-4">Campaign</th>
+                        <th class="px-5 py-4">Total Donasi</th>
+                        <th class="px-5 py-4">Data Rekening</th>
+                        <th class="px-5 py-4 text-center">Aksi</th>
                     </tr>
                 </thead>
 
-                <tbody class="divide-y divide-gray-200 bg-white">
-                    @foreach ($users as $user)
-                        <tr class="hover:bg-gray-50/60 transition">
-                            <td class="px-5 py-3">
+                <tbody class="divide-y divide-gray-100">
+                    @forelse ($users as $user)
+                        @php
+                            if ($user->role === 'admin') {
+                                $bankStatus = 'Tidak Berlaku';
+                            } elseif ($user->bankAccount) {
+                                $bankStatus = 'Lengkap';
+                            } else {
+                                $bankStatus = 'Belum Lengkap';
+                            }
+                        @endphp
+
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-5 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-[#D8EFFD] flex items-center justify-center text-[#2D1622] text-sm font-semibold shrink-0">
-                                        {{ $user['initial'] }}
+                                    <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold">
+                                        {{ strtoupper(substr($user->username, 0, 1)) }}
                                     </div>
+
                                     <div>
-                                        <p class="text-sm font-semibold text-[#2D1622] leading-tight">
-                                            {{ $user['name'] }}
+                                        <p class="font-semibold text-gray-800">
+                                            {{ $user->username }}
                                         </p>
-                                        <p class="text-xs text-gray-400 leading-tight max-w-[110px] break-all">
-                                            {{ $user['email'] }}
+                                        <p class="text-xs text-gray-500">
+                                            {{ $user->email }}
                                         </p>
                                     </div>
                                 </div>
                             </td>
 
-                            <td class="px-5 py-3">
-                                <span class="inline-flex justify-center min-w-20 px-3 py-1 rounded-full text-xs font-medium {{ $user['role_color'] }}">
-                                    {{ $user['role'] }}
-                                </span>
+                            <td class="px-5 py-4">
+                                @if ($user->role === 'admin')
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                                        Admin
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                        User
+                                    </span>
+                                @endif
                             </td>
 
-                            <td class="px-5 py-3">
-                                <span class="inline-flex justify-center min-w-24 px-3 py-1 rounded-full text-xs font-medium {{ $user['status_color'] }}">
-                                    {{ $user['status'] }}
-                                </span>
+                            <td class="px-5 py-4">
+                                @if ($user->account_status === 'active')
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                        Aktif
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                                        Tidak Aktif
+                                    </span>
+                                @endif
                             </td>
 
-                            <td class="px-5 py-3 text-sm text-[#2D1622]">
-                                {{ $user['joined'] }}
+                            <td class="px-5 py-4 text-gray-600">
+                                {{ $user->created_at ? $user->created_at->format('d M Y') : '-' }}
                             </td>
 
-                            <td class="px-5 py-3 text-sm text-[#2D1622] text-center">
-                                {{ $user['campaign'] }}
+                            <td class="px-5 py-4 text-gray-600">
+                                {{ $user->campaign_count ?? 0 }}
                             </td>
 
-                            <td class="px-5 py-3 text-sm text-[#2D1622] text-center">
-                                {{ $user['total_donasi'] }}
+                            <td class="px-5 py-4 text-gray-600">
+                                Rp {{ number_format($user->total_donation ?? 0, 0, ',', '.') }}
                             </td>
 
-                            <td class="px-5 py-3 text-center">
-                                <span class="inline-flex justify-center min-w-32 px-3 py-1 rounded-full text-xs font-medium {{ $user['rekening_color'] }}">
-                                    {{ $user['rekening'] }}
-                                </span>
+                            <td class="px-5 py-4">
+                                @if ($bankStatus === 'Lengkap')
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                        Lengkap
+                                    </span>
+                                @elseif ($bankStatus === 'Belum Lengkap')
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700">
+                                        Belum Lengkap
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                        Tidak Berlaku
+                                    </span>
+                                @endif
                             </td>
 
-                            <td class="px-5 py-3">
-                                <div class="flex items-center justify-center gap-2 text-gray-300">
-                                    <button type="button" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:text-[#2D1622] hover:border-gray-300 transition">
-                                        <i class="fa-regular fa-eye text-xs"></i>
-                                    </button>
-                                    <button type="button" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:text-[#2D1622] hover:border-gray-300 transition">
-                                        <i class="fa-regular fa-pen-to-square text-xs"></i>
-                                    </button>
-                                    <button type="button" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:text-[#2D1622] hover:border-gray-300 transition">
-                                        <i class="fa-regular fa-trash-can text-xs"></i>
-                                    </button>
+                            <td class="px-5 py-4">
+                                <div class="flex items-center justify-center">
+                                    <a href="{{ route('admin.users.show', $user->user_id) }}"
+                                    class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center"
+                                    title="Lihat Detail User">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-5 py-10 text-center text-gray-500">
+                                Belum ada data user yang sesuai dengan filter.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
-        {{-- Pagination Statis --}}
-        <div class="px-6 py-8 border-t border-gray-100 flex flex-col lg:flex-row lg:items-center lg:justify-center gap-5">
-            <div class="flex items-center justify-center gap-2">
-                <button class="px-4 py-2 rounded-md bg-gray-50 text-gray-300 text-sm cursor-not-allowed">
-                    ‹ Back
-                </button>
-
-                <button class="w-9 h-9 rounded-md bg-black text-white text-sm font-semibold">
-                    1
-                </button>
-                <button class="w-9 h-9 rounded-md bg-[#FBF4E4] text-[#2D1622] text-sm">
-                    2
-                </button>
-                <button class="w-9 h-9 rounded-md bg-[#FBF4E4] text-[#2D1622] text-sm">
-                    3
-                </button>
-                <button class="w-9 h-9 rounded-md bg-[#FBF4E4] text-[#2D1622] text-sm">
-                    4
-                </button>
-                <button class="w-9 h-9 rounded-md bg-[#FBF4E4] text-[#2D1622] text-sm">
-                    5
-                </button>
-                <button class="w-9 h-9 rounded-md bg-[#FBF4E4] text-[#2D1622] text-sm">
-                    6
-                </button>
-                <button class="w-9 h-9 rounded-md bg-[#FBF4E4] text-[#2D1622] text-sm">
-                    7
-                </button>
-                <button class="w-9 h-9 rounded-md bg-[#FBF4E4] text-[#2D1622] text-sm">
-                    8
-                </button>
-                <button class="w-9 h-9 rounded-md bg-[#FBF4E4] text-[#2D1622] text-sm">
-                    ...
-                </button>
-                <button class="w-12 h-9 rounded-md bg-[#FBF4E4] text-[#2D1622] text-sm">
-                    25
-                </button>
-
-                <button class="px-4 py-2 rounded-md bg-[#FBF4E4] text-[#2D1622] text-sm">
-                    Next ›
-                </button>
-            </div>
-
-            <div class="flex items-center justify-center gap-3 text-sm text-[#2D1622]">
-                <span>Result per page</span>
-                <select class="border border-gray-200 rounded-md px-3 py-2 bg-white focus:outline-none">
-                    <option>10</option>
-                    <option>25</option>
-                    <option>50</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="px-6 pb-8 text-sm text-[#2D1622]">
-            1-10 of 1,250
+        {{-- Pagination --}}
+        <div class="px-5 py-4 border-t border-gray-100">
+            {{ $users->links() }}
         </div>
     </div>
 </div>
