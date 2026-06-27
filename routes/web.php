@@ -1,14 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController; 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\DisbursementController;
+use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\UserCampaignController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// REGISTER
+Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
 
 // LOGIN
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -38,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
         return view('user.dashboard');
     })->name('user.dashboard');
 
+    Route::get('/user/profile', [ProfileController::class, 'edit'])->name('user.profile.edit');
+    Route::put('/user/profile', [ProfileController::class, 'update'])->name('user.profile.update');
     Route::get('/user/campaigns', [UserCampaignController::class, 'index'])->name('user.campaigns');
 
     // route sementara buat cek halaman

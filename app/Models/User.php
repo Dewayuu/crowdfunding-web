@@ -105,6 +105,6 @@ class User extends Authenticatable
      * @return array<string, string>
      */
     protected $casts = [
-        'password' => 'hashed',
+        'password' => 'string',
     ];
 }
