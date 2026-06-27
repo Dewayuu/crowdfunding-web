@@ -56,6 +56,9 @@
 
                 <a href="#" wire:navigate
                    class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('user.campaigns') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
+                
+                <a href="{{ route('user.campaigns') }}" wire:navigate 
+                   class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('user.campaigns*') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
                     <i class="fa-regular fa-file-lines text-sm w-5"></i>
                     <span>Campaign Saya</span>
                 </a>
