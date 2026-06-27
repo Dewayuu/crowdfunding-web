@@ -13,12 +13,10 @@ class CampaignSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Ambil ID User Biasa yang sudah kita buat di UserSeeder sebagai Owner
         $owners = DB::table('tb_users')
             ->where('role', 'user')
             ->get();
 
-        // 2. Buat Kategori Contoh (Pendidikan) di tb_campaign_categories
         $category = DB::table('tb_campaign_categories')
             ->where('slug', 'pendidikan')
             ->first();
@@ -35,7 +33,6 @@ class CampaignSeeder extends Seeder
             $categoryId = $category->category_id;
         }
 
-        // 3. Buat Data Campaign Utama dengan Status PENDING sesuai PDM image_fa9e82.jpg
         $campaignTitles = [
         'individual' => 'Beasiswa Pendidikan Anak Yatim Piatu',
         'foundation' => 'Renovasi Gedung Yayasan',
@@ -53,7 +50,7 @@ class CampaignSeeder extends Seeder
             'short_description' => 'Campaign testing untuk verifikasi admin.',
             'story' => 'Ini adalah campaign dummy untuk pengujian fitur verifikasi campaign.',
             'target_amount' => 25000000,
-            'current_amount' => 0,
+            'current_amount' => 1000000,
             'end_date' => now()->addDays(30),
 
             // SEMUA PENDING

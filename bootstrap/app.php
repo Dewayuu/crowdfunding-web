@@ -11,7 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'check.eligibility' => \App\Http\Middleware\CheckCampaignEligibility::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
