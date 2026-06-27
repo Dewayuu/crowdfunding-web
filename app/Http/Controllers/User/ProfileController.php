@@ -21,17 +21,19 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'username'       => ['required', 'string', 'max:50', 'regex:/^[\pL\s]+$/u'],
-            'email'          => ['required', 'email', Rule::unique('tb_users', 'email')->ignore($user->user_id, 'user_id')],
-            'contact_number' => ['required', 'digits_between:10,15', Rule::unique('tb_users', 'contact_number')->ignore($user->user_id, 'user_id')],
-            'bio'            => ['nullable', 'string', 'max:500'],
-            'profile_photo'  => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
-            'current_password' => ['nullable', 'string'],
-            'password'         => ['nullable', 'string', 'min:8', 'confirmed'],
-            'bank_name'        => ['nullable', 'string', 'max:50'],
-            'account_number'   => ['nullable', 'string', 'max:20'],
-            'account_holder'   => ['nullable', 'string', 'max:255'],
-            'bank_proof'       => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
+            'username'        => ['required', 'string', 'max:50', 'regex:/^[\pL\s]+$/u'],
+            'email'           => ['required', 'email', Rule::unique('tb_users', 'email')->ignore($user->user_id, 'user_id')],
+            'contact_number'  => ['required', 'digits_between:10,15', Rule::unique('tb_users', 'contact_number')->ignore($user->user_id, 'user_id')],
+            'bio'             => ['nullable', 'string', 'max:500'],
+            'nik'             => ['nullable', 'string', 'digits:16'],
+            'ktp_photo'       => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'profile_photo'   => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'current_password'=> ['nullable', 'string'],
+            'password'        => ['nullable', 'string', 'min:8', 'confirmed'],
+            'bank_name'       => ['nullable', 'string', 'max:50'],
+            'account_number'  => ['nullable', 'string', 'max:20'],
+            'account_holder'  => ['nullable', 'string', 'max:255'],
+            'bank_proof'      => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
         ]);
 
         // Cek password lama kalau mau ganti password
@@ -62,6 +64,32 @@ class ProfileController extends Controller
         }
 
         $user->update($updateData);
+
+        // Simpan NIK/KTP untuk individual
+        if ($user->entity_type === 'individual' && $request->filled('nik')) {
+            \Log::info('saving NIK', ['user_id' => $user->user_id, 'nik' => $request->nik]);
+            \App\Models\UserDetailIndividual::updateOrCreate(
+                ['user_id' => $user->user_id],
+                [
+                    'national_id_number' => $request->nik,
+                    'full_name'          => $user->username,
+                    'birth_date'         => now()->toDateString(),
+                    'gender'             => 'male',
+                ]
+            );
+
+            if ($request->hasFile('ktp_photo')) {
+                $ktpPath = $request->file('ktp_photo')->store('documents/ktp', 'public');
+                $user->documents()->updateOrCreate(
+                    ['document_type' => 'ktp'],
+                    [
+                        'document_path'       => $ktpPath,
+                        'uploaded_at'         => now(),
+                        'verification_status' => 'pending',
+                    ]
+                );
+            }
+        }
 
         // Update rekening bank
         if ($request->filled('bank_name') && $request->filled('account_number') && $request->filled('account_holder')) {
