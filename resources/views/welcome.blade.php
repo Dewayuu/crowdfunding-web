@@ -25,9 +25,9 @@
 
             <div class="hidden md:flex items-center gap-10 text-sm font-semibold">
                 <a href="#campaign" class="hover:text-[#F1642E] transition">Donasi</a>
-                <a href="#trust" class="hover:text-[#F1642E] transition">Tentang</a>
+                <a href="#tentang" class="hover:text-[#F1642E] transition">Tentang</a>
                 <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">Masuk</a>
-                <a href="#" class="bg-[#F1642E] px-8 py-3 rounded-lg text-white hover:opacity-90 transition">
+                <a href="{{ route('register') }}" class="bg-[#F1642E] px-8 py-3 rounded-lg text-white hover:opacity-90 transition">
                     Daftar
                 </a>
             </div>
@@ -55,12 +55,28 @@
                 </p>
 
                 <div class="flex flex-wrap gap-6">
-                    <a href="{{ route('campaigns.show', 1) }}" class="bg-[#F1642E] px-8 py-4 rounded-lg font-bold text-white hover:opacity-90 transition">
+                    <a href="#campaign" class="bg-[#F1642E] px-8 py-4 rounded-lg font-bold text-white hover:opacity-90 transition">
                         Lihat Campaign
                     </a>
-                    <a href="#" class="border border-white/80 px-8 py-4 rounded-lg font-bold text-white hover:bg-white hover:text-[#351528] transition">
-                        Mulai Galang Dana
-                    </a>
+
+                    @auth
+                        @if (auth()->user()->role === 'admin')
+                            <a href="{{ route('admin.dashboard') }}"
+                               class="border border-white/80 px-8 py-4 rounded-lg font-bold text-white hover:bg-white hover:text-[#351528] transition">
+                                Mulai Galang Dana
+                            </a>
+                        @else
+                            <a href="{{ route('user.campaigns.create') }}"
+                               class="border border-white/80 px-8 py-4 rounded-lg font-bold text-white hover:bg-white hover:text-[#351528] transition">
+                                Mulai Galang Dana
+                            </a>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}"
+                           class="border border-white/80 px-8 py-4 rounded-lg font-bold text-white hover:bg-white hover:text-[#351528] transition">
+                            Mulai Galang Dana
+                        </a>
+                    @endauth
                 </div>
             </div>
 
@@ -162,7 +178,7 @@
                     <h2 class="font-display text-4xl font-bold">Campaign Terverifikasi</h2>
                 </div>
 
-                <a href="#" class="border border-[#351528] px-8 py-4 rounded-lg font-display text-2xl font-bold hover:bg-[#351528] hover:text-white transition">
+                <a href="#campaign" class="border border-[#351528] px-8 py-4 rounded-lg font-display text-2xl font-bold hover:bg-[#351528] hover:text-white transition">
                     Lihat Semua
                 </a>
             </div>
@@ -170,7 +186,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 
                 {{-- Card 1 --}}
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+                <a href="{{ route('campaigns.show', 1) }}" class="bg-white rounded-xl shadow-xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition block">
                     <div class="h-48 bg-[#DDE8C2] flex items-center justify-center text-center px-6">
                         <div>
                             <div class="text-6xl mb-2">👧👦</div>
@@ -202,10 +218,10 @@
                             <span>20 hari lagi</span>
                         </div>
                     </div>
-                </div>
+                </a>
 
                 {{-- Card 2 --}}
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+                <a href="{{ route('campaigns.show', 2) }}" class="bg-white rounded-xl shadow-xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition block">
                     <div class="h-48 bg-[#FCDDD0] flex items-center justify-center text-center px-6">
                         <div>
                             <div class="text-6xl mb-2">🏥</div>
@@ -237,10 +253,10 @@
                             <span>30 hari lagi</span>
                         </div>
                     </div>
-                </div>
+                </a>
 
                 {{-- Card 3 --}}
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+                <a href="{{ route('campaigns.show', 3) }}" class="bg-white rounded-xl shadow-xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition block">
                     <div class="h-48 bg-[#C4C3E3] flex items-center justify-center text-center px-6">
                         <div>
                             <div class="text-6xl mb-2">🌊</div>
@@ -272,14 +288,72 @@
                             <span>5 hari lagi</span>
                         </div>
                     </div>
-                </div>
+                </a>
 
             </div>
         </div>
     </section>
 
+    {{-- TENTANG --}}
+    <section id="tentang" class="py-20 bg-[#FFF8D8]">
+        <div class="max-w-7xl mx-auto px-10 lg:px-16">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <p class="font-bold text-sm tracking-[0.18em] text-[#F1642E] mb-4">
+                        TENTANG HATINURANI
+                    </p>
+
+                    <h2 class="font-display text-4xl font-bold leading-tight mb-6">
+                        Menghubungkan Donatur dengan Campaign yang Lebih Terpercaya
+                    </h2>
+
+                    <p class="text-base leading-relaxed mb-5">
+                        HatiNurani adalah platform crowdfunding donasi yang membantu mempertemukan
+                        donatur dengan campaign sosial yang membutuhkan dukungan. Platform ini
+                        dirancang untuk membantu donatur berdonasi dengan lebih aman, jelas, dan
+                        percaya.
+                    </p>
+
+                    <p class="text-base leading-relaxed">
+                        Setiap campaign yang diajukan akan melalui proses pemeriksaan oleh admin,
+                        mulai dari kelengkapan data, profil penerima donasi, hingga dokumen pendukung
+                        sebelum ditampilkan kepada publik.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-3xl p-8 shadow-xl border border-[#E8DDD6]">
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="font-display text-2xl font-bold mb-2">Transparan</h3>
+                            <p class="text-sm leading-relaxed">
+                                Informasi campaign, penerima donasi, dan progress penggalangan dana
+                                ditampilkan secara jelas agar donatur memahami tujuan donasi.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="font-display text-2xl font-bold mb-2">Terverifikasi</h3>
+                            <p class="text-sm leading-relaxed">
+                                Campaign diperiksa oleh admin sebelum mendapatkan badge terverifikasi
+                                dan ditampilkan kepada publik.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="font-display text-2xl font-bold mb-2">Berorientasi Kepercayaan</h3>
+                            <p class="text-sm leading-relaxed">
+                                Sistem dirancang untuk membantu donatur merasa lebih yakin sebelum
+                                memberikan dukungan kepada sebuah campaign.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- TRUST SECTION --}}
-    <section id="trust" class="pb-24">
+    <section id="trust" class="py-24">
         <div class="max-w-6xl mx-auto px-10 text-center">
             <h2 class="font-display text-3xl font-bold mb-16">
                 Cara Kami Menjaga Kepercayaan Donatur
@@ -342,17 +416,37 @@
                 <div>
                     <h3 class="font-display text-lg font-bold mb-4">PLATFORM</h3>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="#campaign">Semua Campaign</a></li>
-                        <li><a href="#">Buat Campaign</a></li>
+                        <li><a href="#campaign" class="hover:text-[#F1642E] transition">Semua Campaign</a></li>
+                        <li>
+                            @auth
+                                @if (auth()->user()->role === 'admin')
+                                    <a href="{{ route('admin.dashboard') }}" class="hover:text-[#F1642E] transition">Buat Campaign</a>
+                                @else
+                                    <a href="{{ route('user.campaigns.create') }}" class="hover:text-[#F1642E] transition">Buat Campaign</a>
+                                @endif
+                            @else
+                                <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">Buat Campaign</a>
+                            @endauth
+                        </li>
                     </ul>
                 </div>
 
                 <div>
                     <h3 class="font-display text-lg font-bold mb-4">AKUN</h3>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('login') }}">Masuk</a></li>
-                        <li><a href="#">Daftar</a></li>
-                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">Masuk</a></li>
+                        <li><a href="{{ route('register') }}" class="hover:text-[#F1642E] transition">Daftar</a></li>
+                        <li>
+                            @auth
+                                @if (auth()->user()->role === 'admin')
+                                    <a href="{{ route('admin.dashboard') }}" class="hover:text-[#F1642E] transition">Dashboard</a>
+                                @else
+                                    <a href="{{ route('user.dashboard') }}" class="hover:text-[#F1642E] transition">Dashboard</a>
+                                @endif
+                            @else
+                                <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">Dashboard</a>
+                            @endauth
+                        </li>
                     </ul>
                 </div>
 

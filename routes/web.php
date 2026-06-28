@@ -42,6 +42,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/users/{id}', [UserController::class, 'show'])->name('admin.users.show');
     Route::post('/admin/users/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
 
+    Route::post('/admin/users/{userId}/documents/{documentId}/approve', [UserController::class, 'approveDocument'])
+        ->name('admin.users.documents.approve');
+
+    Route::post('/admin/users/{userId}/documents/{documentId}/reject', [UserController::class, 'rejectDocument'])
+    ->name('admin.users.documents.reject');
+    Route::get('/admin/users/{userId}/documents/{documentId}/view', [UserController::class, 'viewDocument'])
+    ->name('admin.users.documents.view');
+    
     Route::get('/admin/pengajuan-dana', [DisbursementController::class, 'index'])->name('admin.disbursements');
     Route::get('/admin/disbursements/{id}/{type}', [DisbursementController::class, 'show'])->name('admin.disbursements.show');
     Route::post('/admin/disbursements/{id}/{type}/update', [DisbursementController::class, 'update'])->name('admin.disbursements.update');

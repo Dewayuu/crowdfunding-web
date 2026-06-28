@@ -10,7 +10,7 @@
         <div>
             <h1 class="text-2xl font-bold text-gray-800">Manage User</h1>
             <p class="text-sm text-gray-500 mt-1">
-                Kelola data user, role, status akun, dan kelengkapan data rekening.
+                Kelola data user, jenis akun, kelengkapan rekening, dan verifikasi fundraiser.
             </p>
         </div>
     </div>
@@ -20,28 +20,28 @@
         <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <p class="text-sm text-gray-500">Total User</p>
             <h2 class="text-2xl font-bold text-gray-800 mt-2">
-                {{ $summary['total_users'] }}
+                {{ $summary['total_users'] ?? 0 }}
             </h2>
         </div>
 
         <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <p class="text-sm text-gray-500">User Aktif</p>
             <h2 class="text-2xl font-bold text-emerald-600 mt-2">
-                {{ $summary['active_users'] }}
+                {{ $summary['active_users'] ?? 0 }}
             </h2>
         </div>
 
         <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-            <p class="text-sm text-gray-500">Data Rekening Lengkap</p>
+            <p class="text-sm text-gray-500">Rekening Lengkap</p>
             <h2 class="text-2xl font-bold text-blue-600 mt-2">
-                {{ $summary['complete_bank_accounts'] }}
+                {{ $summary['complete_bank_accounts'] ?? 0 }}
             </h2>
         </div>
 
         <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-            <p class="text-sm text-gray-500">Belum Lengkap</p>
+            <p class="text-sm text-gray-500">Fundraiser Terverifikasi</p>
             <h2 class="text-2xl font-bold text-orange-500 mt-2">
-                {{ $summary['incomplete_bank_accounts'] }}
+                {{ $summary['verified_documents'] ?? 0 }}
             </h2>
         </div>
     </div>
@@ -49,8 +49,8 @@
     {{-- Filter --}}
     <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
         <form method="GET" action="{{ route('admin.users') }}">
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div class="md:col-span-2">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
                     <label class="block text-sm font-medium text-gray-600 mb-2">Cari User</label>
                     <input type="text"
                            name="q"
@@ -70,23 +70,28 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-2">Status Akun</label>
-                    <select name="status"
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Jenis Akun</label>
+                    <select name="entity_type"
                             class="w-full rounded-xl border-gray-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-                        <option value="">Semua Status</option>
-                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Aktif</option>
-                        <option value="suspended" {{ request('status') === 'suspended' ? 'selected' : '' }}>Tidak Aktif</option>
+                        <option value="">Semua Jenis</option>
+                        <option value="individual" {{ request('entity_type') === 'individual' ? 'selected' : '' }}>Individual</option>
+                        <option value="foundation" {{ request('entity_type') === 'foundation' ? 'selected' : '' }}>Foundation</option>
+                        <option value="corporate" {{ request('entity_type') === 'corporate' ? 'selected' : '' }}>Corporate</option>
+                        <option value="community" {{ request('entity_type') === 'community' ? 'selected' : '' }}>Community</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-2">Data Rekening</label>
-                    <select name="bank_status"
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Verifikasi Fundraiser</label>
+                    <select name="document_status"
                             class="w-full rounded-xl border-gray-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-                        <option value="">Semua Data</option>
-                        <option value="complete" {{ request('bank_status') === 'complete' ? 'selected' : '' }}>Lengkap</option>
-                        <option value="incomplete" {{ request('bank_status') === 'incomplete' ? 'selected' : '' }}>Belum Lengkap</option>
-                        <option value="not_applicable" {{ request('bank_status') === 'not_applicable' ? 'selected' : '' }}>Tidak Berlaku</option>
+                        <option value="">Semua Verifikasi</option>
+                        <option value="verified" {{ request('document_status') === 'verified' ? 'selected' : '' }}>Terverifikasi</option>
+                        <option value="pending" {{ request('document_status') === 'pending' ? 'selected' : '' }}>Menunggu Review</option>
+                        <option value="rejected" {{ request('document_status') === 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                        <option value="incomplete" {{ request('document_status') === 'incomplete' ? 'selected' : '' }}>Belum Lengkap</option>
+                        <option value="unsubmitted" {{ request('document_status') === 'unsubmitted' ? 'selected' : '' }}>Belum Diajukan</option>
+                        <option value="not_applicable" {{ request('document_status') === 'not_applicable' ? 'selected' : '' }}>Tidak Berlaku</option>
                     </select>
                 </div>
             </div>
@@ -122,11 +127,10 @@
                     <tr>
                         <th class="px-5 py-4">User</th>
                         <th class="px-5 py-4">Role</th>
+                        <th class="px-5 py-4">Jenis Akun</th>
                         <th class="px-5 py-4">Status Akun</th>
-                        <th class="px-5 py-4">Bergabung</th>
-                        <th class="px-5 py-4">Campaign</th>
-                        <th class="px-5 py-4">Total Donasi</th>
                         <th class="px-5 py-4">Data Rekening</th>
+                        <th class="px-5 py-4">Verifikasi Fundraiser</th>
                         <th class="px-5 py-4 text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -134,12 +138,46 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse ($users as $user)
                         @php
+                            // Status rekening
                             if ($user->role === 'admin') {
                                 $bankStatus = 'Tidak Berlaku';
                             } elseif ($user->bankAccount) {
                                 $bankStatus = 'Lengkap';
                             } else {
                                 $bankStatus = 'Belum Lengkap';
+                            }
+
+                            // Dokumen wajib untuk verifikasi fundraiser berdasarkan jenis akun
+                            $requiredDocumentsByEntity = [
+                                'individual' => ['ktp', 'social_media'],
+                                'foundation' => ['ktp', 'sk_kemenkumham'],
+                                'corporate' => ['ktp', 'nib', 'npwp'],
+                                'community' => ['ktp', 'social_media'],
+                            ];
+
+                            $requiredDocuments = $requiredDocumentsByEntity[$user->entity_type] ?? [];
+                            $documents = $user->documents ?? collect();
+                            $uploadedTypes = $documents->pluck('document_type')->toArray();
+
+                            $requiredUploadedDocuments = $documents->whereIn('document_type', $requiredDocuments);
+                            $hasAnyRequiredDocument = $requiredUploadedDocuments->isNotEmpty();
+
+                            $hasMissingRequiredDocument = collect($requiredDocuments)
+                                ->diff($uploadedTypes)
+                                ->isNotEmpty();
+
+                            if ($user->role === 'admin') {
+                                $documentStatus = 'Tidak Berlaku';
+                            } elseif (!$hasAnyRequiredDocument) {
+                                $documentStatus = 'Belum Diajukan';
+                            } elseif ($hasMissingRequiredDocument) {
+                                $documentStatus = 'Belum Lengkap';
+                            } elseif ($requiredUploadedDocuments->contains('verification_status', 'rejected')) {
+                                $documentStatus = 'Ditolak';
+                            } elseif ($requiredUploadedDocuments->contains('verification_status', 'pending')) {
+                                $documentStatus = 'Menunggu Review';
+                            } else {
+                                $documentStatus = 'Terverifikasi';
                             }
                         @endphp
 
@@ -174,6 +212,18 @@
                             </td>
 
                             <td class="px-5 py-4">
+                                @if ($user->role === 'admin')
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                        Tidak Berlaku
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 capitalize">
+                                        {{ $user->entity_type }}
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td class="px-5 py-4">
                                 @if ($user->account_status === 'active')
                                     <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
                                         Aktif
@@ -183,18 +233,6 @@
                                         Tidak Aktif
                                     </span>
                                 @endif
-                            </td>
-
-                            <td class="px-5 py-4 text-gray-600">
-                                {{ $user->created_at ? $user->created_at->format('d M Y') : '-' }}
-                            </td>
-
-                            <td class="px-5 py-4 text-gray-600">
-                                {{ $user->campaign_count ?? 0 }}
-                            </td>
-
-                            <td class="px-5 py-4 text-gray-600">
-                                Rp {{ number_format($user->total_donation ?? 0, 0, ',', '.') }}
                             </td>
 
                             <td class="px-5 py-4">
@@ -214,10 +252,38 @@
                             </td>
 
                             <td class="px-5 py-4">
+                                @if ($documentStatus === 'Terverifikasi')
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                        Terverifikasi
+                                    </span>
+                                @elseif ($documentStatus === 'Menunggu Review')
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+                                        Menunggu Review
+                                    </span>
+                                @elseif ($documentStatus === 'Ditolak')
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                                        Ditolak
+                                    </span>
+                                @elseif ($documentStatus === 'Belum Lengkap')
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700">
+                                        Belum Lengkap
+                                    </span>
+                                @elseif ($documentStatus === 'Belum Diajukan')
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                        Belum Diajukan
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                        Tidak Berlaku
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td class="px-5 py-4">
                                 <div class="flex items-center justify-center">
                                     <a href="{{ route('admin.users.show', $user->user_id) }}"
-                                    class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center"
-                                    title="Lihat Detail User">
+                                       class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center"
+                                       title="Lihat Detail User">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                 </div>
@@ -225,7 +291,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-5 py-10 text-center text-gray-500">
+                            <td colspan="7" class="px-5 py-10 text-center text-gray-500">
                                 Belum ada data user yang sesuai dengan filter.
                             </td>
                         </tr>
