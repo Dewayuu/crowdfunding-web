@@ -57,7 +57,7 @@
 
                             {{-- Nama Lengkap --}}
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap <span class="text-red-500">*</span></label>
                                 <input type="text" name="username"
                                        x-model="username"
                                        placeholder="Nama Pengguna"
@@ -68,7 +68,7 @@
 
                             {{-- Email --}}
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Email <span class="text-red-500">*</span></label>
                                 <input type="email" name="email"
                                        x-model="email"
                                        placeholder="Email Pengguna"
@@ -79,7 +79,7 @@
 
                             {{-- Nomor Telepon --}}
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Telepon</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Telepon <span class="text-red-500">*</span></label>
                                 <input type="text" name="contact_number"
                                        x-model="contact_number"
                                        placeholder="Nomor Telepon Pengguna"
@@ -135,6 +135,202 @@
 
                                             <input type="file" name="ktp_photo" accept=".jpg,.jpeg,.png"
                                                    @change="ktpPreview = URL.createObjectURL($event.target.files[0])"
+                                                   class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- Foundation --}}
+                            @if(Auth::user()->entity_type === 'foundation')
+                                <div class="mt-6">
+                                    <h3 class="text-base font-semibold text-gray-700 mb-4">Data Yayasan</h3>
+                                    <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Yayasan</label>
+                                            <input type="text" name="foundation_name"
+                                                   value="{{ old('foundation_name', Auth::user()->detailFoundation?->foundation_name) }}"
+                                                   placeholder="Nama Yayasan"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor SK Kemenkumham</label>
+                                            <input type="text" name="sk_kemenkumham_number"
+                                                   value="{{ old('sk_kemenkumham_number', Auth::user()->detailFoundation?->sk_kemenkumham_number) }}"
+                                                   placeholder="Nomor SK Kemenkumham"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">File SK Kemenkumham</label>
+                                            @php $skDoc = Auth::user()->documents()->where('document_type', 'sk_kemenkumham')->first(); @endphp
+                                            @if($skDoc)
+                                                <a href="{{ asset('storage/' . $skDoc->file) }}" target="_blank"
+                                                   class="inline-flex items-center gap-1 text-xs text-[#2D1622] hover:underline mb-2 block">
+                                                    <i class="fa-regular fa-file"></i> Lihat file tersimpan
+                                                </a>
+                                            @endif
+                                            <div x-show="skPreview" x-cloak class="mb-2">
+                                                <img :src="skPreview" class="w-40 h-24 object-cover rounded-lg border border-gray-200">
+                                            </div>
+                                            <input type="file" name="sk_kemenkumham" accept=".jpg,.jpeg,.png,.pdf"
+                                                   @change="skPreview = $event.target.files[0].type.startsWith('image') ? URL.createObjectURL($event.target.files[0]) : null"
+                                                   class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Alamat Yayasan</label>
+                                            <textarea name="foundation_address" rows="2"
+                                                      placeholder="Alamat Yayasan"
+                                                      class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition resize-none">{{ Auth::user()->detailFoundation?->foundation_address }}</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Penanggung Jawab (PIC)</label>
+                                            <input type="text" name="pic_name_foundation"
+                                                   value="{{ Auth::user()->detailFoundation?->pic_name }}"
+                                                   placeholder="Nama sesuai KTP"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">KTP Penanggung Jawab (PIC)</label>
+                                            @php $ktpDoc = Auth::user()->documents()->where('document_type', 'ktp')->first(); @endphp
+                                            @if($ktpDoc)
+                                                <a href="{{ asset('storage/' . $ktpDoc->file) }}" target="_blank"
+                                                   class="inline-flex items-center gap-1 text-xs text-[#2D1622] hover:underline mb-2 block">
+                                                    <i class="fa-regular fa-file-image"></i> Lihat KTP tersimpan
+                                                </a>
+                                            @endif
+                                            <div x-show="ktpPicPreview" x-cloak class="mb-2">
+                                                <img :src="ktpPicPreview" class="w-40 h-24 object-cover rounded-lg border border-gray-200">
+                                            </div>
+                                            <input type="file" name="pic_ktp" accept=".jpg,.jpeg,.png"
+                                                   @change="ktpPicPreview = URL.createObjectURL($event.target.files[0])"
+                                                   class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- Corporate --}}
+                            @if(Auth::user()->entity_type === 'corporate')
+                                <div class="mt-6">
+                                    <h3 class="text-base font-semibold text-gray-700 mb-4">Data Perusahaan</h3>
+                                    <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Perusahaan</label>
+                                            <input type="text" name="company_name"
+                                                   value="{{ old('company_name', Auth::user()->detailCorporate?->company_name) }}"
+                                                   placeholder="Nama Perusahaan"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">NIB</label>
+                                            <input type="text" name="nib"
+                                                   value="{{ old('nib', Auth::user()->detailCorporate?->nib) }}"
+                                                   placeholder="Nomor Induk Berusaha"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">NPWP</label>
+                                            <input type="text" name="npwp"
+                                                   value="{{ old('npwp', Auth::user()->detailCorporate?->npwp) }}"
+                                                   placeholder="NPWP"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Alamat Perusahaan</label>
+                                            <textarea name="company_address" rows="2"
+                                                      placeholder="Alamat Perusahaan"
+                                                      class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition resize-none">{{ Auth::user()->detailCorporate?->company_address }}</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Penanggung Jawab (PIC)</label>
+                                            <input type="text" name="pic_name_corporate"
+                                                   value="{{ Auth::user()->detailCorporate?->pic_name }}"
+                                                   placeholder="Nama sesuai KTP"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">KTP Penanggung Jawab (PIC)</label>
+                                            @php $ktpDoc = Auth::user()->documents()->where('document_type', 'ktp')->first(); @endphp
+                                            @if($ktpDoc)
+                                                <a href="{{ asset('storage/' . $ktpDoc->file) }}" target="_blank"
+                                                   class="inline-flex items-center gap-1 text-xs text-[#2D1622] hover:underline mb-2 block">
+                                                    <i class="fa-regular fa-file-image"></i> Lihat KTP tersimpan
+                                                </a>
+                                            @endif
+                                            <div x-show="ktpPicPreview" x-cloak class="mb-2">
+                                                <img :src="ktpPicPreview" class="w-40 h-24 object-cover rounded-lg border border-gray-200">
+                                            </div>
+                                            <input type="file" name="pic_ktp" accept=".jpg,.jpeg,.png"
+                                                   @change="ktpPicPreview = URL.createObjectURL($event.target.files[0])"
+                                                   class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- Community --}}
+                            @if(Auth::user()->entity_type === 'community')
+                                <div class="mt-6">
+                                    <h3 class="text-base font-semibold text-gray-700 mb-4">Data Komunitas</h3>
+                                    <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Komunitas</label>
+                                            <input type="text" name="community_name"
+                                                   value="{{ old('community_name', Auth::user()->detailCommunity?->community_name) }}"
+                                                   placeholder="Nama Komunitas"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">URL Media Sosial</label>
+                                            <input type="url" name="social_media_url"
+                                                   value="{{ old('social_media_url', Auth::user()->detailCommunity?->social_media_url) }}"
+                                                   placeholder="https://instagram.com/komunitas"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Screenshot Profil Media Sosial</label>
+                                            @php $ssDoc = Auth::user()->documents()->where('document_type', 'social_media')->first(); @endphp
+                                            @if($ssDoc)
+                                                <a href="{{ asset('storage/' . $ssDoc->file) }}" target="_blank"
+                                                   class="inline-flex items-center gap-1 text-xs text-[#2D1622] hover:underline mb-2 block">
+                                                    <i class="fa-regular fa-file-image"></i> Lihat file tersimpan
+                                                </a>
+                                            @endif
+                                            <div x-show="ssPreview" x-cloak class="mb-2">
+                                                <img :src="ssPreview" class="w-40 h-24 object-cover rounded-lg border border-gray-200">
+                                            </div>
+                                            <input type="file" name="social_media_screenshot" accept=".jpg,.jpeg,.png"
+                                                   @change="ssPreview = URL.createObjectURL($event.target.files[0])"
+                                                   class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Tipe Komunitas</label>
+                                            <input type="text" name="community_type"
+                                                   value="{{ Auth::user()->detailCommunity?->community_type }}"
+                                                   placeholder="Contoh: Pecinta Alam, Ikatan Alumni, dll"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Penanggung Jawab (PIC)</label>
+                                            <input type="text" name="pic_name_community"
+                                                   value="{{ Auth::user()->detailCommunity?->pic_name }}"
+                                                   placeholder="Nama sesuai KTP"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">KTP Penanggung Jawab (PIC)</label>
+                                            @php $ktpDoc = Auth::user()->documents()->where('document_type', 'ktp')->first(); @endphp
+                                            @if($ktpDoc)
+                                                <a href="{{ asset('storage/' . $ktpDoc->file) }}" target="_blank"
+                                                   class="inline-flex items-center gap-1 text-xs text-[#2D1622] hover:underline mb-2 block">
+                                                    <i class="fa-regular fa-file-image"></i> Lihat KTP tersimpan
+                                                </a>
+                                            @endif
+                                            <div x-show="ktpPicPreview" x-cloak class="mb-2">
+                                                <img :src="ktpPicPreview" class="w-40 h-24 object-cover rounded-lg border border-gray-200">
+                                            </div>
+                                            <input type="file" name="pic_ktp" accept=".jpg,.jpeg,.png"
+                                                   @change="ktpPicPreview = URL.createObjectURL($event.target.files[0])"
                                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
                                         </div>
                                     </div>
@@ -255,7 +451,7 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Foto Buku Tabungan / Bukti Rekening</label>
 
                                     {{-- Preview file tersimpan --}}
-                                    @php $bankDoc = Auth::user()->documents()->where('document_type', 'bank_book')->first(); @endphp
+                                    @php $bankDoc = Auth::user()->documents()->where('document_type', 'bank_book')->latest('uploaded_at')->first(); @endphp
                                     @if($bankDoc)
                                         <div class="mb-2">
                                             <p class="text-xs text-gray-400 mb-1">File tersimpan:</p>
@@ -372,7 +568,10 @@
                 contact_number: '{{ Auth::user()->contact_number }}',
                 bio: '{{ Auth::user()->bio }}',
                 nik: '{{ Auth::user()->detailIndividual?->national_id_number ?? '' }}',
+                skPreview: null,
+                ssPreview: null,
                 ktpPreview: null,
+                ktpPicPreview: null,
                 bankPreview: null,
 
                 handleSubmit() {
@@ -400,6 +599,23 @@
                     formData.set('bank_name', document.querySelector('select[name="bank_name"]').value);
                     formData.set('account_number', document.querySelector('input[name="account_number"]').value);
                     formData.set('account_holder', document.querySelector('input[name="account_holder"]').value);
+                    // Foundation
+                    formData.set('foundation_address', document.querySelector('textarea[name="foundation_address"]')?.value ?? '');
+                    formData.set('pic_name_foundation', document.querySelector('input[name="pic_name_foundation"]')?.value ?? '');
+                    formData.set('sk_kemenkumham_number', document.querySelector('input[name="sk_kemenkumham_number"]')?.value ?? '');
+
+                    // Corporate
+                    formData.set('company_address', document.querySelector('textarea[name="company_address"]')?.value ?? '');
+                    formData.set('pic_name_corporate', document.querySelector('input[name="pic_name_corporate"]')?.value ?? '');
+                    formData.set('company_name', document.querySelector('input[name="company_name"]')?.value ?? '');
+                    formData.set('nib', document.querySelector('input[name="nib"]')?.value ?? '');
+                    formData.set('npwp', document.querySelector('input[name="npwp"]')?.value ?? '');
+
+                    // Community
+                    formData.set('community_type', document.querySelector('input[name="community_type"]')?.value ?? '');
+                    formData.set('pic_name_community', document.querySelector('input[name="pic_name_community"]')?.value ?? '');
+                    formData.set('community_name', document.querySelector('input[name="community_name"]')?.value ?? '');
+                    formData.set('social_media_url', document.querySelector('input[name="social_media_url"]')?.value ?? '');
 
                     // Tambahkan file foto jika ada
                     const photoInput = document.querySelector('input[name="profile_photo"]');
@@ -411,6 +627,30 @@
                     const ktpInput = document.querySelector('input[name="ktp_photo"]');
                     if (ktpInput && ktpInput.files[0]) {
                         formData.set('ktp_photo', ktpInput.files[0]);
+                    }
+
+                    // Tambahkan file SK Kemenkumham jika ada
+                    const skInput = document.querySelector('input[name="sk_kemenkumham"]');
+                    if (skInput && skInput.files[0]) {
+                        formData.set('sk_kemenkumham', skInput.files[0]);
+                    }
+
+                    // Tambahkan file screenshot media sosial jika ada
+                    const ssInput = document.querySelector('input[name="social_media_screenshot"]');
+                    if (ssInput && ssInput.files[0]) {
+                        formData.set('social_media_screenshot', ssInput.files[0]);
+                    }
+
+                    // Tambahkan file KTP PIC jika ada
+                    const picKtpInput = document.querySelector('input[name="pic_ktp"]');
+                    if (picKtpInput && picKtpInput.files[0]) {
+                        formData.set('pic_ktp', picKtpInput.files[0]);
+                    }
+
+                    // Tambahkan file bukti rekening jika ada   
+                    const bankProofInput = document.querySelector('input[name="bank_proof"]');
+                    if (bankProofInput && bankProofInput.files[0]) {
+                        formData.set('bank_proof', bankProofInput.files[0]);
                     }
 
                     formData.append('_method', 'PUT');

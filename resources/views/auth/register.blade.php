@@ -59,7 +59,7 @@
 
                         {{-- Nama Lengkap --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap <span class="text-red-500">*</span> </label>
                             <input type="text" name="username" x-model="form.username"
                                    placeholder="Masukkan Nama Lengkap Anda"
                                    :class="errors.username ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-[#2D1622] focus:border-[#2D1622]'"
@@ -69,7 +69,7 @@
 
                         {{-- Email --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Email <span class="text-red-500">*</span></label>
                             <input type="email" name="email" x-model="form.email"
                                    placeholder="Masukkan Email Anda"
                                    :class="errors.email ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-[#2D1622] focus:border-[#2D1622]'"
@@ -79,7 +79,7 @@
 
                         {{-- Nomor Kontak --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Kontak</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Kontak <span class="text-red-500">*</span></label>
                             <input type="text" name="contact_number" x-model="form.contact_number"
                                    placeholder="Masukan Nomor Kontak Anda"
                                    :class="errors.contact_number ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-[#2D1622] focus:border-[#2D1622]'"
@@ -89,7 +89,7 @@
 
                         {{-- Password --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Password <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <input :type="showPassword ? 'text' : 'password'" name="password" x-model="form.password"
                                        :class="errors.password ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-[#2D1622] focus:border-[#2D1622]'"
@@ -105,7 +105,7 @@
 
                         {{-- Konfirmasi Password --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Konfirmasi Password</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Konfirmasi Password <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" x-model="form.password_confirmation"
                                        :class="errors.password_confirmation ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-[#2D1622] focus:border-[#2D1622]'"
@@ -132,7 +132,7 @@
 
                         {{-- Tipe Akun --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Tipe Akun</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Tipe Akun <span class="text-red-500">*</span></label>
                             <select name="entity_type" x-model="form.entity_type"
                                     :class="errors.entity_type ? 'border-red-400' : 'border-gray-300'"
                                     class="w-full px-4 py-2.5 border rounded-md outline-none text-gray-700 bg-white focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
@@ -152,9 +152,24 @@
                             <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Dokumen Yayasan</p>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">SK Kemenkumham</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Yayasan <span class="text-red-500">*</span></label>
+                                    <input type="text" name="foundation_name" placeholder="Nama Yayasan"
+                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor SK Kemenkumham <span class="text-red-500">*</span></label>
+                                    <input type="text" name="sk_kemenkumham_number" placeholder="Nomor SK Kemenkumham"
+                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">SK Kemenkumham <span class="text-red-500">*</span></label>
                                     <input type="file" name="sk_kemenkumham" accept=".pdf,.jpg,.jpeg,.png"
                                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Penanggung Jawab (PIC)</label>
+                                    <input type="text" name="pic_name_foundation" placeholder="Nama sesuai KTP"
+                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1.5">KTP Penanggung Jawab (PIC)</label>
@@ -169,13 +184,23 @@
                             <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Dokumen Perusahaan</p>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">NIB (Nomor Induk Berusaha)</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Perusahaan <span class="text-red-500">*</span></label>
+                                    <input type="text" name="company_name" placeholder="Nama PT/CV"
+                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">NIB (Nomor Induk Berusaha) <span class="text-red-500">*</span></label>
                                     <input type="text" name="nib" placeholder="1234567890123"
                                            class="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">NPWP</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">NPWP <span class="text-red-500">*</span></label>
                                     <input type="text" name="npwp" placeholder="00.000.000.0-000.000"
+                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Penanggung Jawab (PIC)</label>
+                                    <input type="text" name="pic_name_corporate" placeholder="Nama sesuai KTP"
                                            class="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
                                 </div>
                                 <div>
@@ -191,14 +216,24 @@
                             <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Dokumen Komunitas</p>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">URL Media Sosial Komunitas</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Komunitas <span class="text-red-500">*</span></label>
+                                    <input type="text" name="community_name" placeholder="Nama Komunitas"
+                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">URL Media Sosial Komunitas <span class="text-red-500">*</span></label>
                                     <input type="url" name="social_media_url" placeholder="https://instagram.com/komunitas"
                                            class="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Screenshot Profil Media Sosial</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Screenshot Profil Media Sosial <span class="text-red-500">*</span></label>
                                     <input type="file" name="social_media_screenshot" accept=".jpg,.jpeg,.png"
                                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Penanggung Jawab (PIC)</label>
+                                    <input type="text" name="pic_name_community" placeholder="Nama sesuai KTP"
+                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1.5">KTP Penanggung Jawab (PIC)</label>
@@ -213,7 +248,7 @@
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Informasi Rekening Bank</p>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                                    Nama Bank
+                                    Nama Bank <span class="text-red-500">*</span>
                                 </label>
                                 <select name="bank_name"
                                         x-model="form.bank_name"
@@ -239,7 +274,7 @@
                                    class="text-red-500 text-xs mt-1"></p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Rekening</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Rekening <span class="text-red-500">*</span></label>
                                 <input type="text" name="account_number" x-model="form.account_number"
                                        placeholder="Masukkan Nomor Rekening Anda"
                                        :class="errors.account_number ? 'border-red-400' : 'border-gray-300'"
@@ -247,7 +282,7 @@
                                 <p x-show="errors.account_number" x-text="errors.account_number" class="text-red-500 text-xs mt-1"></p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Pemilik Rekening</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Pemilik Rekening <span class="text-red-500">*</span></label>
                                 <input type="text" name="account_holder" x-model="form.account_holder"
                                        placeholder="Masukkan Nama Pemilik Rekening"
                                        :class="errors.account_holder ? 'border-red-400' : 'border-gray-300'"
@@ -255,7 +290,7 @@
                                 <p x-show="errors.account_holder" x-text="errors.account_holder" class="text-red-500 text-xs mt-1"></p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Foto Buku Tabungan / Bukti Rekening</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Foto Buku Tabungan / Bukti Rekening <span class="text-red-500">*</span></label>
                                 <input type="file" name="bank_proof" accept=".jpg,.jpeg,.png,.pdf"
                                        :class="errors.bank_proof ? 'border-red-400' : ''"
                                        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
@@ -271,6 +306,7 @@
                                 <a href="#" class="text-[#6B7A4A] hover:underline">Syarat</a>
                                 &
                                 <a href="#" class="text-[#6B7A4A] hover:underline">Ketentuan dan Kebijakan Privasi</a>
+                                <span class="text-red-500">*</span>
                             </label>
                         </div>
                         <p x-show="errors.agree" x-text="errors.agree" class="text-red-500 text-xs -mt-3"></p>
@@ -358,13 +394,13 @@
                     }
 
                     if (this.form.username && /\d/.test(this.form.username)) {
-                    this.errors.username = 'Nama tidak boleh mengandung angka.';
-                    hasError = true;
+                        this.errors.username = 'Nama tidak boleh mengandung angka.';
+                        hasError = true;
                     }
 
                     if (this.form.contact_number && !/^\d{10,15}$/.test(this.form.contact_number)) {
-                    this.errors.contact_number = 'Nomor kontak harus angka, 10-15 digit.';
-                    hasError = true;
+                        this.errors.contact_number = 'Nomor kontak harus angka, 10-15 digit.';
+                        hasError = true;
                     }
 
                     if (!this.form.email.trim()) {
@@ -434,7 +470,8 @@
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
-                                ?? document.querySelector('input[name="_token"]').value
+                                ?? document.querySelector('input[name="_token"]').value,
+                            'Accept': 'application/json',
                         },
                         body: formData
                     })
