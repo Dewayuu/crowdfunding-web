@@ -11,8 +11,17 @@ use App\Http\Controllers\User\CampaignListController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PublicCampaignController;
 
+use App\Models\Campaign;
+
 Route::get('/', function () {
-    return view('welcome');
+    $campaigns = Campaign::with(['user', 'category', 'images'])
+        ->where('verification_status', 'approved')
+        ->where('campaign_status', 'active')
+        ->latest()
+        ->take(3)
+        ->get();
+
+    return view('welcome', compact('campaigns'));
 });
 
 // DETAIL CAMPAIGN PUBLIK

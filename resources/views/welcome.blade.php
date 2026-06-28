@@ -24,12 +24,33 @@
             </a>
 
             <div class="hidden md:flex items-center gap-10 text-sm font-semibold">
-                <a href="#campaign" class="hover:text-[#F1642E] transition">Donasi</a>
-                <a href="#tentang" class="hover:text-[#F1642E] transition">Tentang</a>
-                <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">Masuk</a>
-                <a href="{{ route('register') }}" class="bg-[#F1642E] px-8 py-3 rounded-lg text-white hover:opacity-90 transition">
-                    Daftar
+                <a href="{{ route('campaigns.index') }}" class="hover:text-[#F1642E] transition">
+                    Donasi
                 </a>
+
+                <a href="#tentang" class="hover:text-[#F1642E] transition">
+                    Tentang
+                </a>
+
+                @auth
+                    @if (auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.dashboard') }}" class="hover:text-[#F1642E] transition">
+                            Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('user.dashboard') }}" class="hover:text-[#F1642E] transition">
+                            Dashboard
+                        </a>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">
+                        Masuk
+                    </a>
+
+                    <a href="{{ route('register') }}" class="bg-[#F1642E] px-8 py-3 rounded-lg text-white hover:opacity-90 transition">
+                        Daftar
+                    </a>
+                @endauth
             </div>
         </nav>
     </header>
@@ -58,25 +79,6 @@
                     <a href="#campaign" class="bg-[#F1642E] px-8 py-4 rounded-lg font-bold text-white hover:opacity-90 transition">
                         Lihat Campaign
                     </a>
-
-                    @auth
-                        @if (auth()->user()->role === 'admin')
-                            <a href="{{ route('admin.dashboard') }}"
-                               class="border border-white/80 px-8 py-4 rounded-lg font-bold text-white hover:bg-white hover:text-[#351528] transition">
-                                Mulai Galang Dana
-                            </a>
-                        @else
-                            <a href="{{ route('user.campaigns.create') }}"
-                               class="border border-white/80 px-8 py-4 rounded-lg font-bold text-white hover:bg-white hover:text-[#351528] transition">
-                                Mulai Galang Dana
-                            </a>
-                        @endif
-                    @else
-                        <a href="{{ route('login') }}"
-                           class="border border-white/80 px-8 py-4 rounded-lg font-bold text-white hover:bg-white hover:text-[#351528] transition">
-                            Mulai Galang Dana
-                        </a>
-                    @endauth
                 </div>
             </div>
 
@@ -156,16 +158,18 @@
                 Temukan Campaign yang Ingin Kamu Dukung
             </h2>
 
-            <div class="bg-white border border-[#E8DDD6] rounded-xl p-2 flex items-center shadow-sm">
+            <form action="{{ route('campaigns.index') }}" method="GET" class="bg-white border border-[#E8DDD6] rounded-xl p-2 flex items-center shadow-sm">
                 <input
                     type="text"
+                    name="search"
                     placeholder="Cari campaign, kategori, atau pembuat..."
                     class="flex-1 px-5 py-3 outline-none text-sm bg-transparent text-[#351528]"
                 >
-                <button class="bg-[#F1642E] text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2">
+
+                <button type="submit" class="bg-[#F1642E] text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2">
                     <span>⌕</span> Cari
                 </button>
-            </div>
+            </form>
         </div>
     </section>
 
@@ -178,117 +182,108 @@
                     <h2 class="font-display text-4xl font-bold">Campaign Terverifikasi</h2>
                 </div>
 
-                <a href="#campaign" class="border border-[#351528] px-8 py-4 rounded-lg font-display text-2xl font-bold hover:bg-[#351528] hover:text-white transition">
+                <a href="{{ route('campaigns.index') }}" class="border border-[#351528] px-8 py-4 rounded-lg font-display text-2xl font-bold hover:bg-[#351528] hover:text-white transition">
                     Lihat Semua
                 </a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 
-                {{-- Card 1 --}}
-                <a href="{{ route('campaigns.show', 1) }}" class="bg-white rounded-xl shadow-xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition block">
-                    <div class="h-48 bg-[#DDE8C2] flex items-center justify-center text-center px-6">
-                        <div>
-                            <div class="text-6xl mb-2">👧👦</div>
-                            <p class="font-bold">Pendidikan Anak Papua</p>
-                        </div>
-                    </div>
+                @forelse (($campaigns ?? collect()) as $campaign)
+                    @php
+                        $targetAmount = (float) $campaign->target_amount;
+                        $currentAmount = (float) $campaign->current_amount;
 
-                    <div class="p-5">
-                        <h3 class="font-display font-bold text-lg leading-tight mb-2">
-                            Beasiswa untuk 50 Anak Kurang Mampu di Papua
-                        </h3>
-                        <p class="text-xs mb-4">
-                            oleh HatiNurani Foundation <span class="text-blue-500">♟</span>
-                        </p>
+                        $percentage = $targetAmount > 0
+                            ? min(100, round(($currentAmount / $targetAmount) * 100))
+                            : 0;
 
-                        <div class="w-full bg-gray-200 rounded-full h-6 overflow-hidden mb-3">
-                            <div class="bg-[#FFC400] h-6 w-1/2 flex items-center justify-center text-sm font-bold">
-                                50%
+                        $daysLeft = $campaign->end_date
+                            ? max(0, (int) now()->startOfDay()->diffInDays($campaign->end_date, false))
+                            : null;
+
+                        $categorySlug = $campaign->category->slug ?? '';
+
+                        $categoryEmoji = match ($categorySlug) {
+                            'pendidikan' => '👧👦',
+                            'kesehatan' => '🏥',
+                            'bencana-alam' => '🌊',
+                            'bencana' => '🌊',
+                            default => '🤝',
+                        };
+
+                        $cardBg = match ($categorySlug) {
+                            'pendidikan' => 'bg-[#DDE8C2]',
+                            'kesehatan' => 'bg-[#FCDDD0]',
+                            'bencana-alam' => 'bg-[#C4C3E3]',
+                            'bencana' => 'bg-[#C4C3E3]',
+                            default => 'bg-[#FDFBE2]',
+                        };
+                    @endphp
+
+                    <a href="{{ route('campaigns.show', $campaign->campaign_id) }}"
+                       class="bg-white rounded-xl shadow-xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition block">
+
+                        <div class="h-48 {{ $cardBg }} flex items-center justify-center text-center px-6">
+                            <div>
+                                <div class="text-6xl mb-2">{{ $categoryEmoji }}</div>
+                                <p class="font-bold">
+                                    {{ $campaign->category->category_name ?? 'Campaign Sosial' }}
+                                </p>
                             </div>
                         </div>
 
-                        <div class="flex justify-between text-xs mb-6">
-                            <span>Rp 188jt terkumpul</span>
-                            <span>50% dari Rp 100jt</span>
-                        </div>
+                        <div class="p-5">
+                            <h3 class="font-display font-bold text-lg leading-tight mb-2">
+                                {{ $campaign->title }}
+                            </h3>
 
-                        <div class="flex justify-between text-xs">
-                            <span>245 donatur</span>
-                            <span>20 hari lagi</span>
-                        </div>
-                    </div>
-                </a>
+                            <p class="text-xs mb-4">
+                                oleh {{ $campaign->user->name ?? 'Fundraiser' }}
+                                <span class="text-blue-500">♟</span>
+                            </p>
 
-                {{-- Card 2 --}}
-                <a href="{{ route('campaigns.show', 2) }}" class="bg-white rounded-xl shadow-xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition block">
-                    <div class="h-48 bg-[#FCDDD0] flex items-center justify-center text-center px-6">
-                        <div>
-                            <div class="text-6xl mb-2">🏥</div>
-                            <p class="font-bold">Bantuan Kesehatan</p>
-                        </div>
-                    </div>
+                            <div class="w-full bg-gray-200 rounded-full h-6 overflow-hidden mb-3">
+                                <div class="bg-[#FFC400] h-6 flex items-center justify-center text-sm font-bold"
+                                     style="width: {{ $percentage }}%;">
+                                    {{ $percentage }}%
+                                </div>
+                            </div>
 
-                    <div class="p-5">
-                        <h3 class="font-display font-bold text-lg leading-tight mb-2">
-                            Operasi Katarak Gratis untuk Lansia Dhuafa
-                        </h3>
-                        <p class="text-xs mb-4">
-                            oleh HatiNurani Foundation <span class="text-blue-500">♟</span>
-                        </p>
+                            <div class="flex justify-between text-xs mb-6 gap-4">
+                                <span>
+                                    Rp {{ number_format($currentAmount, 0, ',', '.') }} terkumpul
+                                </span>
 
-                        <div class="w-full bg-gray-200 rounded-full h-6 overflow-hidden mb-3">
-                            <div class="bg-[#FFC400] h-6 w-[45%] flex items-center justify-center text-sm font-bold">
-                                45%
+                                <span>
+                                    {{ $percentage }}% dari Rp {{ number_format($targetAmount, 0, ',', '.') }}
+                                </span>
+                            </div>
+
+                            <div class="flex justify-between text-xs">
+                                <span>{{ $campaign->donations_count ?? 0 }} donatur</span>
+
+                                <span>
+                                    @if ($daysLeft !== null)
+                                        {{ $daysLeft }} hari lagi
+                                    @else
+                                        Tidak ada batas waktu
+                                    @endif
+                                </span>
                             </div>
                         </div>
-
-                        <div class="flex justify-between text-xs mb-6">
-                            <span>Rp 54jt terkumpul</span>
-                            <span>45% dari Rp 120jt</span>
-                        </div>
-
-                        <div class="flex justify-between text-xs">
-                            <span>182 donatur</span>
-                            <span>30 hari lagi</span>
-                        </div>
-                    </div>
-                </a>
-
-                {{-- Card 3 --}}
-                <a href="{{ route('campaigns.show', 3) }}" class="bg-white rounded-xl shadow-xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition block">
-                    <div class="h-48 bg-[#C4C3E3] flex items-center justify-center text-center px-6">
-                        <div>
-                            <div class="text-6xl mb-2">🌊</div>
-                            <p class="font-bold">Bencana Alam</p>
-                        </div>
-                    </div>
-
-                    <div class="p-5">
-                        <h3 class="font-display font-bold text-lg leading-tight mb-2">
-                            Bantu Korban Banjir Bandung 2024
+                    </a>
+                @empty
+                    <div class="md:col-span-3 bg-white rounded-xl shadow p-10 text-center">
+                        <h3 class="font-display text-2xl font-bold mb-3">
+                            Belum Ada Campaign Terverifikasi
                         </h3>
-                        <p class="text-xs mb-4">
-                            oleh HatiNurani Foundation <span class="text-blue-500">♟</span>
+
+                        <p class="text-sm text-[#351528]/70">
+                            Campaign yang telah disetujui admin akan tampil di halaman ini.
                         </p>
-
-                        <div class="w-full bg-gray-200 rounded-full h-6 overflow-hidden mb-3">
-                            <div class="bg-[#FFC400] h-6 w-[86%] flex items-center justify-center text-sm font-bold">
-                                86%
-                            </div>
-                        </div>
-
-                        <div class="flex justify-between text-xs mb-6">
-                            <span>Rp 215jt terkumpul</span>
-                            <span>86% dari Rp 250jt</span>
-                        </div>
-
-                        <div class="flex justify-between text-xs">
-                            <span>891 donatur</span>
-                            <span>5 hari lagi</span>
-                        </div>
                     </div>
-                </a>
+                @endforelse
 
             </div>
         </div>
@@ -408,6 +403,7 @@
                     <h2 class="font-display text-2xl font-bold mb-4">
                         Hati<span class="text-[#F1642E]">Nurani</span>
                     </h2>
+
                     <p class="text-sm leading-relaxed max-w-xs">
                         Platform crowdfunding terpercaya yang menghubungkan donatur dengan campaign yang membutuhkan dukungan.
                     </p>
@@ -415,36 +411,55 @@
 
                 <div>
                     <h3 class="font-display text-lg font-bold mb-4">PLATFORM</h3>
+
                     <ul class="space-y-2 text-sm">
-                        <li><a href="#campaign" class="hover:text-[#F1642E] transition">Semua Campaign</a></li>
                         <li>
-                            @auth
-                                @if (auth()->user()->role === 'admin')
-                                    <a href="{{ route('admin.dashboard') }}" class="hover:text-[#F1642E] transition">Buat Campaign</a>
-                                @else
-                                    <a href="{{ route('user.campaigns.create') }}" class="hover:text-[#F1642E] transition">Buat Campaign</a>
-                                @endif
-                            @else
-                                <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">Buat Campaign</a>
-                            @endauth
+                            <a href="{{ route('campaigns.index') }}" class="hover:text-[#F1642E] transition">
+                                Semua Campaign
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#tentang" class="hover:text-[#F1642E] transition">
+                                Tentang HatiNurani
+                            </a>
                         </li>
                     </ul>
                 </div>
 
                 <div>
                     <h3 class="font-display text-lg font-bold mb-4">AKUN</h3>
+
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">Masuk</a></li>
-                        <li><a href="{{ route('register') }}" class="hover:text-[#F1642E] transition">Daftar</a></li>
+                        @guest
+                            <li>
+                                <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">
+                                    Masuk
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('register') }}" class="hover:text-[#F1642E] transition">
+                                    Daftar
+                                </a>
+                            </li>
+                        @endguest
+
                         <li>
                             @auth
                                 @if (auth()->user()->role === 'admin')
-                                    <a href="{{ route('admin.dashboard') }}" class="hover:text-[#F1642E] transition">Dashboard</a>
+                                    <a href="{{ route('admin.dashboard') }}" class="hover:text-[#F1642E] transition">
+                                        Dashboard
+                                    </a>
                                 @else
-                                    <a href="{{ route('user.dashboard') }}" class="hover:text-[#F1642E] transition">Dashboard</a>
+                                    <a href="{{ route('user.dashboard') }}" class="hover:text-[#F1642E] transition">
+                                        Dashboard
+                                    </a>
                                 @endif
                             @else
-                                <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">Dashboard</a>
+                                <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">
+                                    Dashboard
+                                </a>
                             @endauth
                         </li>
                     </ul>
@@ -452,6 +467,7 @@
 
                 <div>
                     <h3 class="font-display text-lg font-bold mb-4">KONTAK</h3>
+
                     <ul class="space-y-3 text-sm">
                         <li>📧 halo@hatinurani.id</li>
                         <li>📞 +62 812 3456 7890</li>
