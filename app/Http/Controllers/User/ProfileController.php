@@ -83,7 +83,7 @@ class ProfileController extends Controller
                 $user->documents()->updateOrCreate(
                     ['document_type' => 'ktp'],
                     [
-                        'document_path'       => $ktpPath,
+                        'file'       => $ktpPath,
                         'uploaded_at'         => now(),
                         'verification_status' => 'pending',
                     ]

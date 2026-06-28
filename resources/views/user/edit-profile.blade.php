@@ -101,28 +101,45 @@
                             </div>
 
                             {{-- Data Identitas Individual --}}
-                        @if(Auth::user()->entity_type === 'individual')
-                            <div class="mt-6">
-                                <h3 class="text-base font-semibold text-gray-700 mb-4">Data Identitas (Wajib untuk membuat Campaign)</h3>
-                                <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1.5">NIK (Nomor Induk Kependudukan)</label>
-                                        <input type="text" name="nik"
-                                               value="{{ old('nik', Auth::user()->detailIndividual?->national_id_number) }}"
-                                               placeholder="16 digit NIK"
-                                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Foto KTP</label>
-                                        @if(Auth::user()->detailIndividual?->national_id_number)
-                                            <p class="text-xs text-gray-400 mb-2">NIK sudah tersimpan. Upload KTP baru hanya jika ingin mengganti.</p>
-                                        @endif
-                                        <input type="file" name="ktp_photo" accept=".jpg,.jpeg,.png"
-                                               class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+                            @if(Auth::user()->entity_type === 'individual')
+                                <div class="mt-6">
+                                    <h3 class="text-base font-semibold text-gray-700 mb-4">Data Identitas (Wajib untuk membuat Campaign)</h3>
+                                    <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">NIK (Nomor Induk Kependudukan)</label>
+                                            <input type="text" name="nik"
+                                                   x-model="nik"
+                                                   placeholder="16 digit NIK"
+                                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none text-gray-700 focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622] transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Foto KTP</label>
+
+                                            {{-- Preview file tersimpan --}}
+                                            @php $ktpDoc = Auth::user()->documents()->where('document_type', 'ktp')->first(); @endphp
+                                            @if($ktpDoc)
+                                                <div class="mb-2">
+                                                    <p class="text-xs text-gray-400 mb-1">File tersimpan:</p>
+                                                    <a href="{{ asset('storage/' . $ktpDoc->file) }}" target="_blank"
+                                                       class="inline-flex items-center gap-1 text-xs text-[#2D1622] hover:underline">
+                                                        <i class="fa-regular fa-file-image"></i> Lihat KTP tersimpan
+                                                    </a>
+                                                </div>
+                                            @endif
+
+                                            {{-- Preview sebelum upload --}}
+                                            <div x-show="ktpPreview" x-cloak class="mb-2">
+                                                <p class="text-xs text-gray-400 mb-1">Preview:</p>
+                                                <img :src="ktpPreview" class="w-40 h-24 object-cover rounded-lg border border-gray-200">
+                                            </div>
+
+                                            <input type="file" name="ktp_photo" accept=".jpg,.jpeg,.png"
+                                                   @change="ktpPreview = URL.createObjectURL($event.target.files[0])"
+                                                   class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endif
+                            @endif
                         </div>
                     </div>
 
@@ -236,14 +253,29 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Foto Buku Tabungan / Bukti Rekening</label>
-                                    @if(Auth::user()->bankAccount)
-                                        <p class="text-xs text-gray-400 mb-2">Sudah ada foto sebelumnya. Upload baru hanya jika ingin mengganti.</p>
+
+                                    {{-- Preview file tersimpan --}}
+                                    @php $bankDoc = Auth::user()->documents()->where('document_type', 'bank_book')->first(); @endphp
+                                    @if($bankDoc)
+                                        <div class="mb-2">
+                                            <p class="text-xs text-gray-400 mb-1">File tersimpan:</p>
+                                            <a href="{{ asset('storage/' . $bankDoc->file) }}" target="_blank"
+                                               class="inline-flex items-center gap-1 text-xs text-[#2D1622] hover:underline">
+                                                <i class="fa-regular fa-file-image"></i> Lihat buku tabungan tersimpan
+                                            </a>
+                                        </div>
                                     @endif
+
+                                    {{-- Preview sebelum upload --}}
+                                    <div x-show="bankPreview" x-cloak class="mb-2">
+                                        <p class="text-xs text-gray-400 mb-1">Preview:</p>
+                                        <img :src="bankPreview" class="w-40 h-24 object-cover rounded-lg border border-gray-200">
+                                    </div>
+
                                     <input type="file" name="bank_proof" accept=".jpg,.jpeg,.png,.pdf"
+                                           @change="bankPreview = $event.target.files[0].type.startsWith('image') ? URL.createObjectURL($event.target.files[0]) : null"
                                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
-                                    @error('bank_proof')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
+                                    <p class="text-xs text-gray-400 mt-1">Preview hanya tersedia untuk file gambar (bukan PDF)</p>
                                 </div>
                             </div>
                         </div>
@@ -339,6 +371,9 @@
                 email: '{{ Auth::user()->email }}',
                 contact_number: '{{ Auth::user()->contact_number }}',
                 bio: '{{ Auth::user()->bio }}',
+                nik: '{{ Auth::user()->detailIndividual?->national_id_number ?? '' }}',
+                ktpPreview: null,
+                bankPreview: null,
 
                 handleSubmit() {
                     this.showConfirmModal = true;
@@ -358,7 +393,7 @@
                     formData.set('email', this.email);
                     formData.set('contact_number', this.contact_number);
                     formData.set('bio', this.bio);
-                    formData.set('nik', document.querySelector('input[name="nik"]')?.value ?? '');
+                    formData.set('nik', this.nik);
                     formData.set('current_password', this.currentPassword);
                     formData.set('password', this.newPassword);
                     formData.set('password_confirmation', this.confirmPassword);
@@ -370,6 +405,12 @@
                     const photoInput = document.querySelector('input[name="profile_photo"]');
                     if (photoInput && photoInput.files[0]) {
                         formData.set('profile_photo', photoInput.files[0]);
+                    }
+
+                    // Tambahkan file KTP jika ada
+                    const ktpInput = document.querySelector('input[name="ktp_photo"]');
+                    if (ktpInput && ktpInput.files[0]) {
+                        formData.set('ktp_photo', ktpInput.files[0]);
                     }
 
                     formData.append('_method', 'PUT');
