@@ -59,7 +59,9 @@
                         </div>
                         
                         <div class="text-right mt-2">
-                            <a href="#" class="text-sm text-[#F15A24] hover:underline">Lupa password?</a>
+                            <a href="{{ route('forgot.password') }}" class="text-sm text-[#F15A24] hover:underline">
+                                Lupa password?
+                            </a>
                         </div>
                     </div>
 

@@ -32,6 +32,7 @@ class Campaign extends Model
         'campaign_status',
         'disbursement_status',
         'admin_notes',
+        'proposal_file'
     ];
 
     /**
