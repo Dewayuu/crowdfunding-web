@@ -18,6 +18,9 @@ Route::get('/', function () {
 // DETAIL CAMPAIGN PUBLIK
 Route::get('/campaigns/{id}', [PublicCampaignController::class, 'show'])->name('campaigns.show');
 
+// list campaign
+    Route::get('/campaigns', [CampaignListController::class, 'index'])->name('campaigns.index');
+
 // REGISTER
 Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
@@ -78,8 +81,7 @@ Route::middleware(['auth'])->group(function () {
         return response('<h1 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#4A5568;">Halaman Kosong (Placeholder Form Edit Campaign #ID-' . $id . ')</h1>');
     })->name('user.campaigns.edit');
 
-    // list campaign
-    Route::get('/campaigns', [CampaignListController::class, 'index'])->name('campaigns.index');
+    
     
     Route::middleware(['check.eligibility'])->group(function () {
         // route sementara buat cek halaman, nanti bisa diubah sesuaiin sama rute create campaign yg udah jadi
