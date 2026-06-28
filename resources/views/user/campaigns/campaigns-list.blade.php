@@ -16,42 +16,7 @@
 <body class="bg-white min-h-screen">
 
     {{-- ======================== NAVBAR ======================== --}}
-    <nav class="bg-[#2D1622] sticky top-0 z-50">
-        <div class="w-full px-6 py-4 flex items-center justify-between">
-
-            {{-- Kiri: Logo --}}
-            <a href="{{ url('/') }}" class="text-xl font-bold text-white">Logo</a>
-
-            {{-- Kanan: Menu + Profile --}}
-            <div class="flex items-center gap-8">
-                <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-                    <a href="{{ url('/') }}" class="hover:text-white transition">Beranda</a>
-                    <a href="{{ route('campaigns.index') }}" class="text-white border-b-2 border-white pb-0.5">Donasi</a>
-                    <a href="#" class="hover:text-white transition">Tentang</a>
-                    <a href="#" class="hover:text-white transition">Kontak</a>
-                </div>
-
-                @auth
-                    <a href="{{ route('user.dashboard') }}" class="flex items-center gap-2 hover:opacity-80 transition">
-                        <div class="w-9 h-9 rounded-full overflow-hidden bg-gray-600 flex items-center justify-center">
-                            @if(Auth::user()->profile_photo)
-                                <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" class="w-full h-full object-cover">
-                            @else
-                                <i class="fa-regular fa-user text-gray-300 text-sm"></i>
-                            @endif
-                        </div>
-                        <span class="text-sm font-medium text-gray-200">{{ Auth::user()->username }}</span>
-                    </a>
-                @else
-                    <a href="{{ route('register') }}"
-                       class="bg-[#6B7A4A] hover:bg-[#5a6840] text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
-                        Register / Login
-                    </a>
-                @endauth
-            </div>
-
-        </div>
-    </nav>
+    @include('layouts.navbar')
 
     {{-- ======================== HERO ======================== --}}
     <div class="bg-[#2D1622] text-white py-16 px-6">
@@ -239,12 +204,8 @@
         @endif
     </div>
 
-    {{-- ======================== FOOTER ======================== --}}
-    <footer class="bg-[#2D1622] text-white mt-16 py-10 px-6">
-        <div class="max-w-7xl mx-auto text-center">
-            <p class="text-gray-400 text-sm">© {{ date('Y') }} Crowdfunding Platform. All rights reserved.</p>
-        </div>
-    </footer>
+    {{-- FOOTER --}}
+    @include('layouts.footer')
 
 </body>
 </html>
