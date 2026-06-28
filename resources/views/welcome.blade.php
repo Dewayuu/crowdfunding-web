@@ -16,46 +16,10 @@
 
 <body class="bg-[#FDFBE2] text-[#351528]">
 
-    {{-- NAVBAR --}}
-    <header class="bg-[#351528] text-white">
-        <nav class="max-w-7xl mx-auto px-10 lg:px-16 py-6 flex items-center justify-between border-b border-white/25">
-            <a href="/" class="font-display text-2xl font-bold">
-                Hati<span class="text-[#F1642E]">Nurani</span>
-            </a>
+    {{-- ======================== NAVBAR ======================== --}}
+    @include('layouts.navbar')
 
-            <div class="hidden md:flex items-center gap-10 text-sm font-semibold">
-                <a href="{{ route('campaigns.index') }}" class="hover:text-[#F1642E] transition">
-                    Donasi
-                </a>
-
-                <a href="#tentang" class="hover:text-[#F1642E] transition">
-                    Tentang
-                </a>
-
-                @auth
-                    @if (auth()->user()->role === 'admin')
-                        <a href="{{ route('admin.dashboard') }}" class="hover:text-[#F1642E] transition">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('user.dashboard') }}" class="hover:text-[#F1642E] transition">
-                            Dashboard
-                        </a>
-                    @endif
-                @else
-                    <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">
-                        Masuk
-                    </a>
-
-                    <a href="{{ route('register') }}" class="bg-[#F1642E] px-8 py-3 rounded-lg text-white hover:opacity-90 transition">
-                        Daftar
-                    </a>
-                @endauth
-            </div>
-        </nav>
-    </header>
-
-    {{-- HERO --}}
+    {{-- ======================== HERO ======================== --}}
     <section class="bg-[#351528] text-white relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-10 lg:px-16 py-20 lg:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
@@ -110,7 +74,7 @@
         </div>
     </section>
 
-    {{-- STATISTICS --}}
+    {{-- ======================== STATISTICS ======================== --}}
     <section class="relative -mt-12 z-20">
         <div class="max-w-6xl mx-auto px-6">
             <div class="bg-white rounded-2xl shadow-xl px-8 py-5 grid grid-cols-2 lg:grid-cols-4 gap-6 items-center">
@@ -151,7 +115,7 @@
         </div>
     </section>
 
-    {{-- SEARCH --}}
+    {{-- ======================== SEARCH ======================== --}}
     <section class="py-20">
         <div class="max-w-4xl mx-auto px-6 text-center">
             <h2 class="font-display text-3xl font-bold mb-8">
@@ -173,7 +137,7 @@
         </div>
     </section>
 
-    {{-- CAMPAIGN TERVERIFIKASI --}}
+    {{-- ======================== CAMPAIGN TERVERIFIKASI ======================== --}}
     <section id="campaign" class="pb-20">
         <div class="max-w-7xl mx-auto px-10 lg:px-16">
             <div class="flex items-end justify-between mb-12">
@@ -209,6 +173,7 @@
                             'kesehatan' => '🏥',
                             'bencana-alam' => '🌊',
                             'bencana' => '🌊',
+                            'sosial-kemanusiaan' => '🤝',
                             default => '🤝',
                         };
 
@@ -217,8 +182,15 @@
                             'kesehatan' => 'bg-[#FCDDD0]',
                             'bencana-alam' => 'bg-[#C4C3E3]',
                             'bencana' => 'bg-[#C4C3E3]',
+                            'sosial-kemanusiaan' => 'bg-[#FFF2C9]',
                             default => 'bg-[#FDFBE2]',
                         };
+
+                        $ownerName = $campaign->user->name
+                            ?? $campaign->user->full_name
+                            ?? $campaign->user->username
+                            ?? $campaign->user->email
+                            ?? 'Fundraiser';
                     @endphp
 
                     <a href="{{ route('campaigns.show', $campaign->campaign_id) }}"
@@ -239,7 +211,7 @@
                             </h3>
 
                             <p class="text-xs mb-4">
-                                oleh {{ $campaign->user->name ?? 'Fundraiser' }}
+                                oleh {{ $ownerName }}
                                 <span class="text-blue-500">♟</span>
                             </p>
 
@@ -289,7 +261,7 @@
         </div>
     </section>
 
-    {{-- TENTANG --}}
+    {{-- ======================== TENTANG ======================== --}}
     <section id="tentang" class="py-20 bg-[#FFF8D8]">
         <div class="max-w-7xl mx-auto px-10 lg:px-16">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -347,7 +319,7 @@
         </div>
     </section>
 
-    {{-- TRUST SECTION --}}
+    {{-- ======================== TRUST SECTION ======================== --}}
     <section id="trust" class="py-24">
         <div class="max-w-6xl mx-auto px-10 text-center">
             <h2 class="font-display text-3xl font-bold mb-16">
@@ -394,95 +366,8 @@
         </div>
     </section>
 
-    {{-- FOOTER --}}
-    <footer class="bg-[#351528] text-white pt-10 pb-20">
-        <div class="max-w-7xl mx-auto px-10 lg:px-16">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b border-white/20">
-
-                <div>
-                    <h2 class="font-display text-2xl font-bold mb-4">
-                        Hati<span class="text-[#F1642E]">Nurani</span>
-                    </h2>
-
-                    <p class="text-sm leading-relaxed max-w-xs">
-                        Platform crowdfunding terpercaya yang menghubungkan donatur dengan campaign yang membutuhkan dukungan.
-                    </p>
-                </div>
-
-                <div>
-                    <h3 class="font-display text-lg font-bold mb-4">PLATFORM</h3>
-
-                    <ul class="space-y-2 text-sm">
-                        <li>
-                            <a href="{{ route('campaigns.index') }}" class="hover:text-[#F1642E] transition">
-                                Semua Campaign
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#tentang" class="hover:text-[#F1642E] transition">
-                                Tentang HatiNurani
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="font-display text-lg font-bold mb-4">AKUN</h3>
-
-                    <ul class="space-y-2 text-sm">
-                        @guest
-                            <li>
-                                <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">
-                                    Masuk
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="{{ route('register') }}" class="hover:text-[#F1642E] transition">
-                                    Daftar
-                                </a>
-                            </li>
-                        @endguest
-
-                        <li>
-                            @auth
-                                @if (auth()->user()->role === 'admin')
-                                    <a href="{{ route('admin.dashboard') }}" class="hover:text-[#F1642E] transition">
-                                        Dashboard
-                                    </a>
-                                @else
-                                    <a href="{{ route('user.dashboard') }}" class="hover:text-[#F1642E] transition">
-                                        Dashboard
-                                    </a>
-                                @endif
-                            @else
-                                <a href="{{ route('login') }}" class="hover:text-[#F1642E] transition">
-                                    Dashboard
-                                </a>
-                            @endauth
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="font-display text-lg font-bold mb-4">KONTAK</h3>
-
-                    <ul class="space-y-3 text-sm">
-                        <li>📧 halo@hatinurani.id</li>
-                        <li>📞 +62 812 3456 7890</li>
-                        <li>📷 @hati_nurani</li>
-                        <li>🌐 @hatinuraniofficial</li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <p class="text-sm text-white/70 mt-6">
-                © 2024 HatiNurani. All rights reserved.
-            </p>
-        </div>
-    </footer>
+    {{-- ======================== FOOTER ======================== --}}
+    @include('layouts.footer')
 
 </body>
 </html>
