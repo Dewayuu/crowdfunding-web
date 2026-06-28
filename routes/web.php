@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\DisbursementController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\UserCampaignController;
+use App\Http\Controllers\User\CampaignListController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PublicCampaignController;
 
@@ -77,6 +78,9 @@ Route::middleware(['auth'])->group(function () {
         return response('<h1 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#4A5568;">Halaman Kosong (Placeholder Form Edit Campaign #ID-' . $id . ')</h1>');
     })->name('user.campaigns.edit');
 
+    // list campaign
+    Route::get('/campaigns', [CampaignListController::class, 'index'])->name('campaigns.index');
+    
     Route::middleware(['check.eligibility'])->group(function () {
         // route sementara buat cek halaman, nanti bisa diubah sesuaiin sama rute create campaign yg udah jadi
         Route::get('/user/campaigns/create', function () {
