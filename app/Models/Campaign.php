@@ -92,4 +92,12 @@ class Campaign extends Model
             $this->target_amount - $this->current_amount
         );
     }
+
+    public function getCanDisburseAttribute() {
+        return $this->current_amount >= $this->target_amount;
+    }
+
+    public function getIsDeadlinePassedAttribute() {
+        return $this->end_date && now()->greaterThan($this->end_date);
+    }
 }

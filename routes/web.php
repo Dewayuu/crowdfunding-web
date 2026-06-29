@@ -89,8 +89,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/user/campaigns', [UserCampaignController::class, 'index'])->name('user.campaigns');
 
+    Route::post('/user/campaigns/{id}/disburse', [UserCampaignController::class, 'requestDisbursement'])->name('user.campaigns.disburse');
+    Route::post('/user/campaigns/{id}/refund', [UserCampaignController::class, 'requestRefund'])->name('user.campaigns.refund');
+
     // route sementara buat cek halaman
-    Route::get('/user/campaigns/{id}/detail', [UserCampaignController::class, 'ownerDetail'])->name('user.campaigns.owner-detail');
+    // Route::get('/user/campaigns/{id}/detail', [UserCampaignController::class, 'ownerDetail'])->name('user.campaigns.owner-detail');
 
     // route sementara buat cek halaman
     Route::get('/user/campaigns/{id}/edit', function ($id) {
