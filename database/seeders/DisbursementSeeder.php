@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class DisbursementSeeder extends Seeder
 {
@@ -41,9 +42,14 @@ class DisbursementSeeder extends Seeder
                 'is_anonymous' => 'no',
                 'amount' => 500000,
                 'support_message' => 'Semoga berkah dan membantu!',
+                
+                'midtrans_order_id' => 'DON-' . time() . '-' . Str::upper(Str::random(6)),
+                'midtrans_transaction_id' => 'TRX-' . rand(10000000, 99999999),
+                
                 'payment_method' => 'qris',
                 'payment_reference' => 'REF-' . rand(100000, 999999),
-                'payment_status' => 'success', 
+                'payment_status' => 'paid', 
+                
                 'paid_at' => now()->subDays(5),
                 'expired_at' => now()->subDays(5)->addHours(2),
                 'created_at' => now()->subDays(5),
@@ -69,6 +75,12 @@ class DisbursementSeeder extends Seeder
                 'created_at' => now()->subDays(3),
                 'processed_at' => $currentStatus !== 'pending' ? now()->subDays(1) : null,
             ]);
+
+            if ($currentStatus === 'transferred') {
+                DB::table('tb_campaigns')
+                    ->where('campaign_id', $campaign->campaign_id)
+                    ->update(['disbursement_status' => 'partially_disbursed']);
+            }
         }
 
         foreach ($campaigns->take(2) as $index => $campaign) {
