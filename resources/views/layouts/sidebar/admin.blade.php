@@ -15,11 +15,14 @@
     </style>
 </head>
 <body class="bg-[#F8F9FA] min-h-screen flex flex-col md:flex-row">
+
     @livewireScripts
+
+    {{-- ======================== SIDEBAR ======================== --}}
     <div class="w-full md:w-72 bg-[#2D1622] text-white flex flex-col min-h-screen px-6 py-8 shadow-xl shrink-0">
-        <div class="text-xl font-bold mb-8 tracking-wide text-gray-200 px-2">
-            Logo
-        </div>
+        <a href="{{ url('/') }}" style="font-family: Georgia, serif;" class="text-2xl font-bold mb-8 tracking-wide text-white px-2 hover:opacity-80 transition block">
+            Hati<span class="text-[#F1642E]">Nurani</span>
+        </a>
 
         <div class="mb-8 px-2">
             <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-3">Admin Panel</p>
@@ -48,25 +51,27 @@
 
             <div class="flex-1 space-y-1">
                 <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-3 mb-2">Menu</p>
-                
+
                 <a href="{{ route('admin.campaigns') }}" wire:navigate
-                class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('admin.campaigns') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
+                   class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('admin.campaigns') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
                     <i class="fa-solid fa-bullhorn text-sm w-5"></i>
                     <span>Kelola Campaign</span>
                 </a>
-                
-                <a href="#" wire:navigate class="flex items-center space-x-3 py-2.5 px-4 rounded-lg text-gray-300 hover:bg-[#422132] hover:text-white transition duration-200 font-medium">
+
+                <a href="{{ route('admin.users') }}" wire:navigate
+                   class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('admin.users') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
                     <i class="fa-solid fa-users text-sm w-5"></i>
                     <span>Kelola User</span>
                 </a>
-                
+
                 <a href="{{ route('admin.disbursements') }}" wire:navigate
-                class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('admin.disbursements') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
+                   class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('admin.disbursements*') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
                     <i class="fa-solid fa-money-bill-transfer text-sm w-5"></i>
                     <span>Pengajuan Dana</span>
                 </a>
-                
-                <a href="#" wire:navigate class="flex items-center space-x-3 py-2.5 px-4 rounded-lg text-gray-300 hover:bg-[#422132] hover:text-white transition duration-200 font-medium">
+
+                <a href="#" wire:navigate
+                   class="flex items-center space-x-3 py-2.5 px-4 rounded-lg text-gray-300 hover:bg-[#422132] hover:text-white transition duration-200 font-medium">
                     <i class="fa-solid fa-hand-holding-dollar text-sm w-5"></i>
                     <span>Data Donasi</span>
                 </a>
@@ -75,7 +80,8 @@
             <div class="border-t border-gray-700 pt-4">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="w-full flex items-center space-x-3 py-2.5 px-4 rounded-lg text-gray-300 hover:bg-red-950 hover:text-red-400 transition duration-200 font-medium text-left">
+                    <button type="submit"
+                            class="w-full flex items-center space-x-3 py-2.5 px-4 rounded-lg text-gray-300 hover:bg-red-950 hover:text-red-400 transition duration-200 font-medium text-left">
                         <i class="fa-solid fa-right-from-bracket text-sm w-5"></i>
                         <span>Log Out</span>
                     </button>
@@ -84,17 +90,18 @@
         </div>
     </div>
 
-    <div class="flex-1 p-8 md:p-12 overflow-y-auto" 
-        x-data="{ show: false }" 
-        x-init="setTimeout(() => show = true, 50)"
-        x-show="show"
-        x-cloak
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 translate-y-4"
-        x-transition:enter-end="opacity-100 translate-y-0">
-        
+    {{-- ======================== MAIN CONTENT ======================== --}}
+    <div class="flex-1 p-8 md:p-12 overflow-y-auto"
+         x-data="{ show: false }"
+         x-init="setTimeout(() => show = true, 50)"
+         x-show="show"
+         x-cloak
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-4"
+         x-transition:enter-end="opacity-100 translate-y-0">
+
         @yield('content')
-        
+
     </div>
 
 </body>

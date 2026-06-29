@@ -124,7 +124,7 @@
                                 {{ $refundItems->firstItem() + $index }}
                             </td>
                             <td class="px-6 py-4">
-                                <span class="text-[10px] font-mono font-bold text-gray-400 block">#DON-{{ $item->donation_id }}</span>
+                                <span class="text-[10px] font-mono font-bold text-gray-400 block">{{ $item->midtrans_order_id ?? '#DON-'.$item->donation_id }}</span>
                                 <div class="font-semibold text-gray-800 text-sm mt-0.5">{{ $item->donor_name }}</div>
                                 <div class="text-xs text-gray-400 mt-0.5">Via {{ strtoupper($item->payment_method) }} • {{ \Carbon\Carbon::parse($item->donation_date)->translatedFormat('d M Y') }}</div>
                             </td>
