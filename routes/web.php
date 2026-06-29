@@ -10,6 +10,8 @@ use App\Http\Controllers\User\UserCampaignController;
 use App\Http\Controllers\User\CampaignListController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PublicCampaignController;
+use App\Http\Controllers\DonationController;
+use App\Http\Controllers\MidtransNotificationController;
 
 use App\Models\Campaign;
 
@@ -43,6 +45,11 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
 })->middleware('auth')->name('admin.dashboard');
+
+Route::post(
+    '/midtrans/notification',
+    [MidtransNotificationController::class, 'handle']
+)->name('midtrans.notification');
 
 // ADMIN
 Route::middleware(['auth'])->group(function () {
@@ -90,7 +97,8 @@ Route::middleware(['auth'])->group(function () {
         return response('<h1 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#4A5568;">Halaman Kosong (Placeholder Form Edit Campaign #ID-' . $id . ')</h1>');
     })->name('user.campaigns.edit');
 
-    
+    Route::post('/donations', [DonationController::class, 'store'])
+    ->name('donations.store');
     
     Route::middleware(['check.eligibility'])->group(function () {
         // route sementara buat cek halaman, nanti bisa diubah sesuaiin sama rute create campaign yg udah jadi

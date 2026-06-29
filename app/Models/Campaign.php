@@ -84,4 +84,12 @@ class Campaign extends Model
     {
         return $this->hasMany(Donation::class, 'campaign_id', 'campaign_id');
     }
+
+    public function getRemainingTargetAttribute(): float
+    {
+        return max(
+            0,
+            $this->target_amount - $this->current_amount
+        );
+    }
 }

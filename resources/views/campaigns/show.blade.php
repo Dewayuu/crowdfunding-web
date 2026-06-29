@@ -41,6 +41,12 @@
     $donorCount = $campaign->donations_count ?? 0;
 @endphp
 
+<script
+    type="text/javascript"
+    src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="{{ config('midtrans.client_key') }}">
+</script>
+
 <body class="bg-[#FFFDF8] text-[#2D1622]">
 
     {{-- NAVBAR --}}
@@ -337,8 +343,13 @@
                         ⏱ Batas waktu: {{ $endDate }}
                     </div>
 
+                    <div class="alert alert-info">
+                        <strong>Sisa target donasi:</strong>
+                        Rp {{ number_format($campaign->remaining_target, 0, ',', '.') }}
+                    </div>
+
                     {{-- FORM DONASI PLACEHOLDER UNTUK MIDTRANS --}}
-                    <form action="#" method="POST" class="mt-6">
+                    <form id="donationForm" action="#" method="POST" class="mt-6">
                         @csrf
 
                         <input type="hidden" name="campaign_id" value="{{ $campaign->campaign_id }}">
@@ -372,27 +383,62 @@
                                 name="amount"
                                 value="50000"
                                 min="5000"
+                                max="{{ $campaign->remaining_target }}"
                                 step="1000"
                                 class="w-full outline-none font-bold bg-transparent text-[#2D1622]"
+                                required
                             >
                         </div>
 
                         <p class="text-xs text-[#6F6A7D] mt-2">
                             Kamu juga bisa memasukkan nominal donasi secara manual. Minimal donasi Rp5.000.
+                            <br> Maksimal Rp {{ number_format($campaign->remaining_target,0,',','.') }}
                         </p>
 
-                        {{-- 
-                            Nanti kalau route Midtrans sudah dibuat temanmu:
-                            1. ganti action="#" menjadi route Midtrans, misalnya:
-                               action="{{ route('midtrans.pay') }}"
-                            2. ganti button type="button" menjadi type="submit"
-                            3. hapus onclick alert di button Donasi Sekarang
-                        --}}
-                        <button type="button"
-                                onclick="alert('Fitur pembayaran Midtrans belum disambungkan. Nanti tombol ini akan mengirim campaign_id dan nominal donasi ke Midtrans.')"
-                                class="w-full bg-[#F47A2A] hover:bg-[#e86d1e] text-white font-extrabold rounded-xl py-4 mt-5 transition">
+                        <div class="mt-4">
+                            <label class="block text-sm font-semibold text-[#2D1622] mb-2">
+                                Pesan Dukungan (Opsional)
+                            </label>
+
+                            <textarea
+                                name="support_message"
+                                rows="3"
+                                maxlength="500"
+                                class="w-full border border-[#E8DDCC] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#F47A2A]"
+                                placeholder="Berikan pesan dukungan.."
+                            ></textarea>
+                        </div>
+
+                        <div class="flex items-center gap-3 mt-4">
+                            <input
+                                type="checkbox"
+                                id="is_anonymous"
+                                name="is_anonymous"
+                                value="yes"
+                            >
+
+                            <label for="is_anonymous">
+                                Sembunyikan nama saya sebagai donatur
+                            </label>
+
+                        </div>
+                        @auth
+                        <button type="submit" 
+                            id="donateButton"
+                            class="w-full bg-[#F47A2A] hover:bg-[#e86d1e] text-white font-extrabold rounded-xl py-4 mt-5 transition
+                            {{ $campaign->remaining_target <=0 ? 'disabled' : '' }}">
                             Donasi Sekarang
                         </button>
+                        @endauth
+
+                        @guest
+                        <button
+                            type="button" 
+                            class="w-full bg-[#F47A2A] hover:bg-[#e86d1e] text-white font-extrabold rounded-xl py-4 mt-5 transition"
+                            onclick="loginRequired()">
+                            Donasi Sekarang
+                        </button>
+                        @endguest
                     </form>
 
                     <div class="grid grid-cols-2 gap-2 mt-3">
@@ -468,6 +514,22 @@
     </main>
 
     <script>
+        function loginRequired() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops! Kamu belum login',
+                text: 'Silahkan melakukan login terlebih dahulu untuk mulai berdonasi.',
+                showCancelButton: true,
+                confirmButtonColor: '#F47A2A', 
+                cancelButtonColor: '#56517E',
+                confirmButtonText: 'Masuk / Login',
+                cancelButtonText: 'Nanti Saja'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ route('login') }}";
+                }
+            });
+        }
         const donationOptions = document.querySelectorAll('.donation-option');
         const donationInput = document.getElementById('donation_amount');
 
@@ -498,5 +560,99 @@
             setActiveDonationButton(matchingButton || null);
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
+
+<script>
+document
+.getElementById('donationForm')
+.addEventListener('submit', async function(e){
+
+    e.preventDefault();
+
+    const form = this;
+
+    const formData = new FormData(form);
+
+    try {
+
+        const response = await fetch(
+            "{{ route('donations.store') }}",
+            {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Accept": "application/json"
+                },
+                body: formData
+            }
+        );
+
+        const result = await response.json();
+
+        if(result.success){
+
+            snap.pay(result.snap_token,{
+
+                onSuccess: function(result){
+                    console.log(result);
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Pembayaran berhasil.',
+                        confirmButtonColor: '#F47A2A'
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+
+                onPending: function(result){
+                    console.log(result);
+                    
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Tertunda',
+                        text: 'Menunggu pembayaran.',
+                        confirmButtonColor: '#F47A2A'
+                    });
+                },
+
+                onError: function(result){
+                    console.log(result);
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Pembayaran gagal.',
+                        confirmButtonColor: '#F47A2A'
+                    });
+                },
+
+                onClose: function(){
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Dibatalkan',
+                        text: 'Popup pembayaran ditutup.',
+                        confirmButtonColor: '#F47A2A'
+                    });
+                }
+
+            });
+
+        }
+
+    } catch(error) {
+        console.error(error);
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Terjadi kesalahan.',
+            confirmButtonColor: '#F47A2A'
+        });
+    }
+
+});
+</script>

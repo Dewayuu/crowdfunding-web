@@ -13,10 +13,35 @@ class Donation extends Model
     protected $fillable = [
         'campaign_id',
         'user_id',
+
         'donor_name',
+        'is_anonymous',
+        'support_message',
+
         'amount',
+
+        'midtrans_order_id',
+        'midtrans_transaction_id',
+        'snap_token',
+
         'payment_method',
-        'payment_status'
+        'payment_reference',
+        'payment_payload',
+        'payment_status',
+
+        'paid_at',
+        'expired_at',
+        'payment_notified_at',
+    ];
+
+    protected $casts = [
+        'amount' => 'decimal:2',
+
+        'payment_payload' => 'array',
+
+        'paid_at' => 'datetime',
+        'expired_at' => 'datetime',
+        'payment_notified_at' => 'datetime',
     ];
 
     public function campaign()

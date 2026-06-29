@@ -40,7 +40,7 @@ class DisbursementSeeder extends Seeder
                 'donor_name' => $donatur->username,
                 'is_anonymous' => 'no',
                 'amount' => 500000,
-                'support_messsage' => 'Semoga berkah dan membantu!',
+                'support_message' => 'Semoga berkah dan membantu!',
                 'payment_method' => 'qris',
                 'payment_reference' => 'REF-' . rand(100000, 999999),
                 'payment_status' => 'success', 

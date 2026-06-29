@@ -26,7 +26,6 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             UserSeeder::class,
             CampaignSeeder::class, 
-            DisbursementSeeder::class,
         ]);
     }
 }
