@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PublicCampaignController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\MidtransNotificationController;
+use App\Http\Controllers\User\DonationHistoryController;
 
 use App\Models\Campaign;
 
@@ -88,6 +89,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/user/profile', [ProfileController::class, 'update'])->name('user.profile.update');
 
     Route::get('/user/campaigns', [UserCampaignController::class, 'index'])->name('user.campaigns');
+
+    Route::get('/user/donations', [DonationHistoryController::class, 'index'])->name('user.donations');
 
     Route::post('/user/campaigns/{id}/disburse', [UserCampaignController::class, 'requestDisbursement'])->name('user.campaigns.disburse');
     Route::post('/user/campaigns/{id}/refund', [UserCampaignController::class, 'requestRefund'])->name('user.campaigns.refund');
