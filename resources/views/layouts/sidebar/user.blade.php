@@ -25,8 +25,12 @@
         <div class="mb-8 px-2">
             <h3 class="text-xl font-bold tracking-wide text-gray-100 mb-4">Halo!</h3>
             <div class="flex items-center space-x-3">
-                <div class="w-11 h-11 rounded-full bg-gray-600/50 flex items-center justify-center text-gray-300 text-xl border border-gray-500/30 shadow-sm">
-                    <i class="fa-regular fa-user"></i>
+                <div class="w-11 h-11 rounded-full overflow-hidden bg-gray-600/50 flex items-center justify-center border border-gray-500/30 shadow-sm">
+                    @if(Auth::user()->profile_photo)
+                        <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" class="w-full h-full object-cover">
+                    @else
+                        <i class="fa-regular fa-user text-gray-300 text-xl"></i>
+                    @endif
                 </div>
                 <div class="overflow-hidden">
                     <h4 class="text-sm font-semibold tracking-wide text-gray-100">
@@ -49,21 +53,20 @@
 
             <div class="flex-1 space-y-1">
                 <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-3 mb-2">Menu</p>
-                
-                <a href="#" wire:navigate 
-                   class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('user.campaigns') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
+                <a href="{{ route('user.campaigns') }}" wire:navigate 
+                   class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('user.campaigns*') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
                     <i class="fa-regular fa-file-lines text-sm w-5"></i>
                     <span>Campaign Saya</span>
                 </a>
-                
-                <a href="#" wire:navigate 
+
+                <a href="#" wire:navigate
                    class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('user.donations') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
                     <i class="fa-regular fa-clock text-sm w-5"></i>
                     <span>Riwayat Donasi</span>
                 </a>
-                
-                <a href="#" wire:navigate 
-                   class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('user.profile') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
+
+                <a href="{{ route('user.profile.edit') }}"
+                   class="flex items-center space-x-3 py-2.5 px-4 rounded-lg transition duration-200 font-medium {{ Request::routeIs('user.profile.edit') ? 'bg-[#FFF9F3] text-[#2D1622]' : 'text-gray-300 hover:bg-[#422132] hover:text-white' }}">
                     <i class="fa-regular fa-user text-sm w-5"></i>
                     <span>Edit Profile</span>
                 </a>
@@ -81,17 +84,17 @@
         </div>
     </div>
 
-    <div class="flex-1 p-8 md:p-12 overflow-y-auto" 
-         x-data="{ show: false }" 
+    <div class="flex-1 p-8 md:p-12 overflow-y-auto"
+         x-data="{ show: false }"
          x-init="show = true"
          x-show="show"
          x-cloak
          x-transition:enter="transition opacity duration-150 ease-out"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100">
-        
+
         @yield('content')
-        
+
     </div>
 
 </body>

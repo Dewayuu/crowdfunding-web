@@ -192,12 +192,15 @@
             Berkas Legalitas & Bukti *
         </label>
 
-        <label class="upload-box mt-2">
+        <label
+    for="identity_file"
+    class="upload-box mt-2 cursor-pointer">
 
             <input
-                type="file"
-                name="identity_file"
-                class="hidden">
+    type="file"
+    id="identity_file"
+    name="identity_file"
+    class="hidden">
 
             <svg xmlns="http://www.w3.org/2000/svg"
                  class="w-10 h-10 mb-4 text-gray-500"
@@ -220,7 +223,12 @@
                 PDF, DOC, DOCX, XLSX • Maks. 10MB
             </p>
 
+            <p id="legal-file-name"
+            class="text-green-600 text-sm mt-3 hidden font-medium">
+            </p>
+
         </label>
+
 
  <!-- ================= CARD 2 ================= -->
 
@@ -384,6 +392,7 @@
                 accept="image/*"
                 class="hidden">
 
+
             <svg xmlns="http://www.w3.org/2000/svg"
                  class="w-12 h-12 text-gray-400 mb-4"
                  fill="none"
@@ -405,6 +414,10 @@
                 PNG, JPG, JPEG (Maksimal 5MB)
             </p>
 
+            <p id="campaign-image-name"
+            class="text-green-600 text-sm mt-3 hidden font-medium">
+            </p>
+
         </label>
 
         <!-- Preview -->
@@ -419,7 +432,7 @@
 
     </div>
 
-    <!-- PROPOSAL -->
+<!-- PROPOSAL -->
 
     <div class="mb-8">
 
@@ -459,6 +472,8 @@
                 Format PDF (Maksimal 10MB)
             </p>
 
+            <p id="file-name" class="text-sm text-green-600 mt-3 hidden"></p>
+
         </label>
 
     </div>
@@ -485,3 +500,46 @@
 
     </div>
 
+    <script>
+document.getElementById('proposal_file').addEventListener('change', function () {
+
+    const fileName = document.getElementById('file-name');
+
+    if (this.files.length > 0) {
+        fileName.textContent = "✓ " + this.files[0].name;
+        fileName.classList.remove('hidden');
+    }
+
+});
+</script>
+
+<script>
+
+function showFileName(inputId, textId)
+{
+    const input = document.getElementById(inputId);
+    const text = document.getElementById(textId);
+
+    if (!input || !text) return;
+
+    input.addEventListener('change', function () {
+
+        if (this.files.length > 0) {
+            text.textContent = "✓ " + this.files[0].name;
+            text.classList.remove('hidden');
+        } else {
+            text.textContent = "";
+            text.classList.add('hidden');
+        }
+
+    });
+}
+
+showFileName('identity_file', 'legal-file-name');
+showFileName('campaign_image', 'campaign-image-name');
+showFileName('proposal_file', 'proposal-file-name');
+
+</script>
+
+
+</body>
