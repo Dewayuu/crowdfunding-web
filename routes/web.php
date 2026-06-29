@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CampaignController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DisbursementController;
+use App\Http\Controllers\Admin\DonationDataController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\UserCampaignController;
 use App\Http\Controllers\User\CampaignListController;
@@ -43,9 +45,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // ADMIN DASHBOARD
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware('auth')->name('admin.dashboard');
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('admin.dashboard');
 
 Route::post(
     '/midtrans/notification',
@@ -55,6 +55,7 @@ Route::post(
 // ADMIN
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/campaigns', [CampaignController::class, 'index'])->name('admin.campaigns');
+    Route::get('/admin/donations', [DonationDataController::class, 'index'])->name('admin.donations');
     Route::get('/admin/campaigns/{id}', [CampaignController::class, 'show'])->name('admin.campaigns.show');
     Route::post('/admin/campaigns/{id}/verify', [CampaignController::class, 'verify'])->name('admin.campaigns.verify');
 
