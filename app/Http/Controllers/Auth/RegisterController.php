@@ -25,6 +25,16 @@ class RegisterController extends Controller
         // Validasi dasar (semua tipe)
         $request->validate([
             'username'         => 'required|string|max:50|regex:/^[\pL\s]+$/u',
+<<<<<<< HEAD
+            'email'                => 'required|email|unique:tb_users,email',
+            'contact_number'   => 'required|digits_between:10,15|unique:tb_users,contact_number',
+            'password'             => 'required|string|min:8|confirmed',
+            'entity_type'          => 'required|in:individual,foundation,corporate,community',
+            'bank_name'            => 'required|string|max:50',
+            'account_number'       => 'required|numeric|unique:tb_user_bank_accounts,account_number',
+            'account_holder'       => 'required|string|max:255',
+            'bank_proof'           => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+=======
             'email'            => 'required|email|unique:tb_users,email',
             'contact_number'   => 'required|digits_between:10,15|unique:tb_users,contact_number',
             'password'         => 'required|string|min:8|confirmed',
@@ -55,11 +65,28 @@ class RegisterController extends Controller
             'bank_proof.required'           => 'Foto buku tabungan wajib diunggah.',
             'bank_proof.mimes'              => 'Format file harus jpg, jpeg, png, atau pdf.',
             'bank_proof.max'                => 'Ukuran file maksimal 2MB.',
+>>>>>>> main
         ]);
 
         // Validasi dokumen tambahan sesuai tipe
         if ($request->entity_type === 'foundation') {
             $request->validate([
+<<<<<<< HEAD
+                'sk_kemenkumham' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+                'pic_ktp'        => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            ]);
+        } elseif ($request->entity_type === 'corporate') {
+            $request->validate([
+                'nib'     => 'required|string|max:20',
+                'npwp'    => 'required|string|max:20',
+                'pic_ktp' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            ]);
+        } elseif ($request->entity_type === 'community') {
+            $request->validate([
+                'social_media_url'        => 'required|url',
+                'social_media_screenshot' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+                'pic_ktp'                 => 'required|file|mimes:jpg,jpeg,png|max:2048',
+=======
                 'foundation_name'       => 'required|string|max:255',
                 'sk_kemenkumham_number' => 'required|string|max:50',
                 'pic_name_foundation'   => 'required|string|max:255',
@@ -119,6 +146,7 @@ class RegisterController extends Controller
                 'social_media_screenshot.mimes' => 'Format file harus jpg, jpeg, atau png.',
                 'pic_ktp.max'                 => 'Ukuran file KTP maksimal 2MB.',
                 'pic_ktp.mimes'               => 'Format file KTP harus jpg, jpeg, atau png.',
+>>>>>>> main
             ]);
         }
 
@@ -159,10 +187,17 @@ class RegisterController extends Controller
 
             UserDetailFoundation::create([
                 'user_id'               => $user->user_id,
+<<<<<<< HEAD
+                'foundation_name'       => $request->username,
+                'sk_kemenkumham_number' => $request->sk_kemenkumham_number ?? '-',
+                'foundation_address'    => '-',
+                'pic_name'              => $request->username,
+=======
                 'foundation_name'       => $request->foundation_name,
                 'sk_kemenkumham_number' => $request->sk_kemenkumham_number,
                 'foundation_address'    => '-',
                 'pic_name'              => $request->pic_name_foundation,
+>>>>>>> main
                 'pic_national_id_number'=> '-',
             ]);
 
@@ -187,11 +222,19 @@ class RegisterController extends Controller
 
             UserDetailCorporate::create([
                 'user_id'               => $user->user_id,
+<<<<<<< HEAD
+                'company_name'          => $request->username,
+                'nib'                   => $request->nib,
+                'npwp'                  => $request->npwp,
+                'company_address'       => '-',
+                'pic_name'              => $request->username,
+=======
                 'company_name'          => $request->company_name,
                 'nib'                   => $request->nib,
                 'npwp'                  => $request->npwp,
                 'company_address'       => '-',
                 'pic_name'              => $request->pic_name_corporate,
+>>>>>>> main
                 'pic_national_id_number'=> '-',
             ]);
 
@@ -209,10 +252,17 @@ class RegisterController extends Controller
 
             UserDetailCommunity::create([
                 'user_id'               => $user->user_id,
+<<<<<<< HEAD
+                'community_name'        => $request->username,
+                'community_type'        => '-',
+                'social_media_url'      => $request->social_media_url,
+                'pic_name'              => $request->username,
+=======
                 'community_name'        => $request->community_name,
                 'community_type'        => '-',
                 'social_media_url'      => $request->social_media_url,
                 'pic_name'              => $request->pic_name_community,
+>>>>>>> main
                 'pic_national_id_number'=> '-',
             ]);
 

@@ -13,7 +13,9 @@ class ProfileController extends Controller
 {
     public function edit()
     {
+
         Auth::user()->refresh();
+
         return view('user.edit-profile');
     }
 
@@ -22,6 +24,7 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         $request->validate([
+
             'username'         => ['required', 'string', 'max:50', 'regex:/^[\pL\s]+$/u'],
             'email'            => ['required', 'email', Rule::unique('tb_users', 'email')->ignore($user->user_id, 'user_id')],
             'contact_number'   => ['required', 'digits_between:10,15', Rule::unique('tb_users', 'contact_number')->ignore($user->user_id, 'user_id')],
@@ -29,6 +32,7 @@ class ProfileController extends Controller
             'nik'              => ['nullable', 'string', 'digits:16'],
             'ktp_photo'        => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:2048'],
             'profile_photo'    => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+
             'current_password' => ['nullable', 'string'],
             'password'         => ['nullable', 'string', 'min:8', 'confirmed'],
             'bank_name'        => ['nullable', 'string', 'max:50'],
@@ -36,6 +40,7 @@ class ProfileController extends Controller
             'account_holder'   => ['nullable', 'string', 'max:255'],
             'bank_proof'       => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
         ]);
+
 
         // Foundation
         if ($user->entity_type === 'foundation') {
@@ -120,6 +125,7 @@ class ProfileController extends Controller
             }
         }
 
+
         // Cek password lama kalau mau ganti password
         if ($request->filled('password')) {
             if (empty($request->current_password) || !Hash::check($request->current_password, $user->getAuthPassword())) {
@@ -149,6 +155,7 @@ class ProfileController extends Controller
 
         $user->update($updateData);
 
+
         // Simpan NIK/KTP untuk individual
         if ($user->entity_type === 'individual' && $request->filled('nik')) {
             \Log::info('saving NIK', ['user_id' => $user->user_id, 'nik' => $request->nik]);
@@ -175,6 +182,7 @@ class ProfileController extends Controller
             }
         }
 
+
         // Update rekening bank
         if ($request->filled('bank_name') && $request->filled('account_number') && $request->filled('account_holder')) {
             $bankData = [
@@ -192,13 +200,14 @@ class ProfileController extends Controller
             if ($request->hasFile('bank_proof')) {
                 $bankProofPath = $request->file('bank_proof')->store('documents/bank_proof', 'public');
 
+
                 // Hapus file lama kalau ada
                 $oldDoc = $user->documents()->where('document_type', 'bank_book')->first();
                 if ($oldDoc && \Storage::disk('public')->exists($oldDoc->file)) {
-                    \Storage::disk('public')->delete($oldDoc->file);
-                }
+                \Storage::disk('public')->delete($oldDoc->file);
+}
 
-                $user->documents()->updateOrCreate(
+   $user->documents()->updateOrCreate(
                     ['document_type' => 'bank_book'],
                     [
                         'file'                => $bankProofPath,

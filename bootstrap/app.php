@@ -15,11 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'check.eligibility' => \App\Http\Middleware\CheckCampaignEligibility::class,
         ]);
 
+
         $middleware->validateCsrfTokens(
             except: [
                 'midtrans/notification',
             ]
         );
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

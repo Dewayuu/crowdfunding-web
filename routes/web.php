@@ -2,39 +2,36 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\DisbursementController;
+use App\Http\Controllers\User\DashboardController;
+use App\Http\Controllers\User\PageController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\User\ProfileController;
-use App\Http\Controllers\User\UserCampaignController;
-use App\Http\Controllers\User\CampaignListController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PublicCampaignController;
-use App\Http\Controllers\DonationController;
-use App\Http\Controllers\MidtransNotificationController;
+use App\Http\Controllers\User\UserCampaignController;
+use App\Http\Controllers\User\CampaignController as CreateCampaignController;
 
-use App\Models\Campaign;
 
 Route::get('/', function () {
-    $campaigns = Campaign::with(['user', 'category', 'images'])
-        ->where('verification_status', 'approved')
-        ->where('campaign_status', 'active')
-        ->latest()
-        ->take(3)
-        ->get();
-
-    return view('welcome', compact('campaigns'));
+    return view('welcome');
 });
+
 
 // DETAIL CAMPAIGN PUBLIK
 Route::get('/campaigns/{id}', [PublicCampaignController::class, 'show'])->name('campaigns.show');
 
-// list campaign
-    Route::get('/campaigns', [CampaignListController::class, 'index'])->name('campaigns.index');
-
 // REGISTER
 Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
+
+// Forgot Password
+Route::get('/forgot-password', [LoginController::class, 'showForgotPassword'])
+    ->name('forgot.password');
+
+Route::post('/forgot-password', [LoginController::class, 'sendResetLink'])
+    ->name('forgot.password.send');
 
 // LOGIN
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -45,11 +42,6 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
 })->middleware('auth')->name('admin.dashboard');
-
-Route::post(
-    '/midtrans/notification',
-    [MidtransNotificationController::class, 'handle']
-)->name('midtrans.notification');
 
 // ADMIN
 Route::middleware(['auth'])->group(function () {
@@ -80,33 +72,55 @@ Route::middleware(['auth'])->group(function () {
 
 // USER
 Route::middleware(['auth'])->group(function () {
-    Route::get('/user/dashboard', function () {
-        return view('user.dashboard');
-    })->name('user.dashboard');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('user.dashboard');
+
+    Route::get('/beranda', [PageController::class, 'beranda'])
+        ->name('beranda');
+
+    Route::get('/donasi', [PageController::class, 'donasi'])
+        ->name('donasi');
+
+    Route::get('/tentang', [PageController::class, 'tentang'])
+        ->name('tentang');
+
+    Route::get('/kontak', [PageController::class, 'kontak'])
+        ->name('kontak');
+
+    Route::get('/campaign/create', [CreateCampaignController::class, 'create'])
+        ->name('campaign.create');
+
+    Route::post('/campaign/store', [CreateCampaignController::class, 'store'])
+        ->name('campaign.store');
+
 
     Route::get('/user/profile', [ProfileController::class, 'edit'])->name('user.profile.edit');
     Route::put('/user/profile', [ProfileController::class, 'update'])->name('user.profile.update');
 
     Route::get('/user/campaigns', [UserCampaignController::class, 'index'])->name('user.campaigns');
 
-    Route::post('/user/campaigns/{id}/disburse', [UserCampaignController::class, 'requestDisbursement'])->name('user.campaigns.disburse');
-    Route::post('/user/campaigns/{id}/refund', [UserCampaignController::class, 'requestRefund'])->name('user.campaigns.refund');
-
     // route sementara buat cek halaman
-    // Route::get('/user/campaigns/{id}/detail', [UserCampaignController::class, 'ownerDetail'])->name('user.campaigns.owner-detail');
+    //Route::get('/user/campaigns/{id}/detail', [UserCampaignController::class, 'ownerDetail'])->name('user.campaigns.owner-detail');
 
     // route sementara buat cek halaman
     Route::get('/user/campaigns/{id}/edit', function ($id) {
         return response('<h1 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#4A5568;">Halaman Kosong (Placeholder Form Edit Campaign #ID-' . $id . ')</h1>');
     })->name('user.campaigns.edit');
 
-    Route::post('/donations', [DonationController::class, 'store'])
-    ->name('donations.store');
-    
+
     Route::middleware(['check.eligibility'])->group(function () {
+
+    Route::get('/user/campaigns/create', [CreateCampaignController::class, 'create'])
+        ->name('user.campaigns.create');
+
+});
+
+    /*Route::middleware(['check.eligibility'])->group(function () {
         // route sementara buat cek halaman, nanti bisa diubah sesuaiin sama rute create campaign yg udah jadi
         Route::get('/user/campaigns/create', function () {
             return view('user.campaigns.create');
         })->name('user.campaigns.create');
+    });*/
+
     });
-});

@@ -27,17 +27,17 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'email',
-        'password',
-        'contact_number',
-        'username',
-        'profile_photo',
-        'bio',
-        'role',
-        'entity_type',
-        'account_status',
-    ];
+   protected $fillable = [
+    'email',
+    'password',
+    'contact_number',
+    'username',
+    'profile_photo',
+    'bio',
+    'role',
+    'entity_type',
+    'account_status',
+];
 
     public function detailIndividual()
     {
@@ -88,6 +88,11 @@ class User extends Authenticatable
             'user_id'
         );
     }
+
+    public function campaigns()
+{
+    return $this->hasMany(Campaign::class,'user_id','user_id');
+}
 
     /**
      * The attributes that should be hidden for serialization.

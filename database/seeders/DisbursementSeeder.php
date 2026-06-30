@@ -48,8 +48,8 @@ class DisbursementSeeder extends Seeder
                 
                 'payment_method' => 'qris',
                 'payment_reference' => 'REF-' . rand(100000, 999999),
+                'payment_status' => 'success', 
                 'payment_status' => 'paid', 
-                
                 'paid_at' => now()->subDays(5),
                 'expired_at' => now()->subDays(5)->addHours(2),
                 'created_at' => now()->subDays(5),

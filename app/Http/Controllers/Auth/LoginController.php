@@ -50,4 +50,20 @@ class LoginController extends Controller
         
         return redirect('/login');
     }
+    public function showForgotPassword()
+    {
+    return view('auth.forgot-password');
+    }
+
+    public function sendResetLink(Request $request)
+    {
+    $request->validate([
+        'email' => 'required|email'
+    ]);
+
+    return back()->with(
+        'success',
+        'Link reset password berhasil dikirim ke email Anda.'
+    );
+    }
 }

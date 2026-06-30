@@ -80,12 +80,15 @@
                                 </span>
                             @else
                                 <span class="inline-flex items-center px-3 py-0.5 text-xs font-semibold text-[#FA6B6B] bg-[#FDE8E7] rounded-full">Ditolak</span>
+<<<<<<< HEAD
+=======
                                 @if($campaign->admin_notes)
                                     <div class="mt-2 text-xs text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">
                                         <span class="font-bold block mb-0.5">Alasan Penolakan:</span>
                                         {{ $campaign->admin_notes }}
                                     </div>
                                 @endif
+>>>>>>> main
                             @endif
                         </div>
 
@@ -96,6 +99,15 @@
                     </div>
 
                     <div class="self-end md:self-start flex flex-col space-y-2 min-w-[110px]">
+<<<<<<< HEAD
+                        <a href="{{ route('user.campaigns.owner-detail', ['id' => $campaign->campaign_id]) }}" class="text-center px-4 py-1.5 border border-gray-200 text-xs font-semibold text-gray-500 hover:text-[#2D1622] hover:bg-[#F6ECEF] hover:border-gray-300 rounded-lg transition bg-gray-50/50 shadow-2xs">
+                            Lihat Detail
+                        </a>
+                        
+                        <a href="{{ route('user.campaigns.edit', ['id' => $campaign->campaign_id]) }}" class="text-center px-4 py-1.5 border border-gray-200 text-xs font-semibold text-gray-500 hover:text-[#2D1622] hover:bg-[#F6ECEF] hover:border-gray-300 rounded-lg transition bg-white shadow-2xs">
+                            <i class="fa-regular fa-pen-to-square mr-1"></i> Edit
+                        </a>
+=======
                         <a href="{{ route('user.campaigns.edit', ['id' => $campaign->campaign_id]) }}" class="text-center px-4 py-1.5 border border-gray-200 text-xs font-semibold text-gray-500 hover:text-[#2D1622] hover:bg-[#F6ECEF] hover:border-gray-300 rounded-lg transition bg-white shadow-2xs">
                             <i class="fa-regular fa-pen-to-square mr-1"></i> Edit
                         </a>
@@ -162,6 +174,7 @@
                                 </form>
                             </div>
                         @endif
+>>>>>>> main
                     </div>
                 </div>
 
@@ -188,6 +201,9 @@
         @include('layouts.pagination', ['items' => $campaigns])
     </div>
 </div>
+<<<<<<< HEAD
+@endsection
+=======
 @endsection
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -210,3 +226,4 @@
         });
     }
 </script>
+>>>>>>> main

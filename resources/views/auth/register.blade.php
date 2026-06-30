@@ -59,7 +59,9 @@
 
                         {{-- Nama Lengkap --}}
                         <div>
+
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap <span class="text-red-500">*</span></label>
+
                             <input type="text" name="username" x-model="form.username"
                                    placeholder="Masukkan Nama Lengkap Anda"
                                    :class="errors.username ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-[#2D1622] focus:border-[#2D1622]'"
@@ -69,7 +71,9 @@
 
                         {{-- Email --}}
                         <div>
+
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Email <span class="text-red-500">*</span></label>
+
                             <input type="email" name="email" x-model="form.email"
                                    placeholder="Masukkan Email Anda"
                                    :class="errors.email ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-[#2D1622] focus:border-[#2D1622]'"
@@ -79,7 +83,9 @@
 
                         {{-- Nomor Kontak --}}
                         <div>
+
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Kontak <span class="text-red-500">*</span></label>
+
                             <input type="text" name="contact_number" x-model="form.contact_number"
                                    placeholder="Masukan Nomor Kontak Anda"
                                    :class="errors.contact_number ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-[#2D1622] focus:border-[#2D1622]'"
@@ -89,7 +95,9 @@
 
                         {{-- Password --}}
                         <div>
+
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Password <span class="text-red-500">*</span></label>
+
                             <div class="relative">
                                 <input :type="showPassword ? 'text' : 'password'" name="password" x-model="form.password"
                                        :class="errors.password ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-[#2D1622] focus:border-[#2D1622]'"
@@ -105,7 +113,9 @@
 
                         {{-- Konfirmasi Password --}}
                         <div>
+
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Konfirmasi Password <span class="text-red-500">*</span></label>
+
                             <div class="relative">
                                 <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" x-model="form.password_confirmation"
                                        :class="errors.password_confirmation ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-[#2D1622] focus:border-[#2D1622]'"
@@ -132,7 +142,9 @@
 
                         {{-- Tipe Akun --}}
                         <div>
+
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Tipe Akun <span class="text-red-500">*</span></label>
+
                             <select name="entity_type" x-model="form.entity_type"
                                     :class="errors.entity_type ? 'border-red-400' : 'border-gray-300'"
                                     class="w-full px-4 py-2.5 border rounded-md outline-none text-gray-700 bg-white focus:ring-2 focus:ring-[#2D1622] focus:border-[#2D1622]">
@@ -151,6 +163,7 @@
                         <template x-if="form.entity_type === 'foundation'">
                             <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Dokumen Yayasan</p>
+
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Yayasan <span class="text-red-500">*</span></label>
@@ -188,13 +201,16 @@
                                        class="text-red-500 text-xs mt-1"></p>
                                 </div>
 
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1.5">KTP Penanggung Jawab (PIC)</label>
                                     <input type="file" name="pic_ktp" accept=".jpg,.jpeg,.png"
                                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+
                                     <p x-show="errors.pic_ktp"
                                        x-text="Array.isArray(errors.pic_ktp) ? errors.pic_ktp[0] : errors.pic_ktp"
                                        class="text-red-500 text-xs mt-1"></p>
+
                                 </div>
                             </div>
                         </template>
@@ -203,6 +219,7 @@
                         <template x-if="form.entity_type === 'corporate'">
                             <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Dokumen Perusahaan</p>
+
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Perusahaan <span class="text-red-500">*</span></label>
@@ -240,13 +257,16 @@
                                        class="text-red-500 text-xs mt-1"></p>
                                 </div>
 
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1.5">KTP Penanggung Jawab (PIC)</label>
                                     <input type="file" name="pic_ktp" accept=".jpg,.jpeg,.png"
                                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+
                                     <p x-show="errors.pic_ktp"
                                        x-text="Array.isArray(errors.pic_ktp) ? errors.pic_ktp[0] : errors.pic_ktp"
                                        class="text-red-500 text-xs mt-1"></p>
+
                                 </div>
                             </div>
                         </template>
@@ -255,6 +275,7 @@
                         <template x-if="form.entity_type === 'community'">
                             <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Dokumen Komunitas</p>
+
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Komunitas <span class="text-red-500">*</span></label>
@@ -296,9 +317,11 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-1.5">KTP Penanggung Jawab (PIC)</label>
                                     <input type="file" name="pic_ktp" accept=".jpg,.jpeg,.png"
                                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
+
                                     <p x-show="errors.pic_ktp"
                                        x-text="Array.isArray(errors.pic_ktp) ? errors.pic_ktp[0] : errors.pic_ktp"
                                        class="text-red-500 text-xs mt-1"></p>
+
                                 </div>
                             </div>
                         </template>
@@ -306,6 +329,7 @@
                         {{-- Info Rekening (semua tipe wajib) --}}
                         <div class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Informasi Rekening Bank</p>
+
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
@@ -335,8 +359,10 @@
                                    class="text-red-500 text-xs mt-1"></p>
                             </div>
 
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Rekening <span class="text-red-500">*</span></label>
+
                                 <input type="text" name="account_number" x-model="form.account_number"
                                        placeholder="Masukkan Nomor Rekening Anda"
                                        :class="errors.account_number ? 'border-red-400' : 'border-gray-300'"
@@ -344,8 +370,10 @@
                                 <p x-show="errors.account_number" x-text="errors.account_number" class="text-red-500 text-xs mt-1"></p>
                             </div>
 
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Pemilik Rekening <span class="text-red-500">*</span></label>
+
                                 <input type="text" name="account_holder" x-model="form.account_holder"
                                        placeholder="Masukkan Nama Pemilik Rekening"
                                        :class="errors.account_holder ? 'border-red-400' : 'border-gray-300'"
@@ -353,8 +381,10 @@
                                 <p x-show="errors.account_holder" x-text="errors.account_holder" class="text-red-500 text-xs mt-1"></p>
                             </div>
 
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Foto Buku Tabungan / Bukti Rekening <span class="text-red-500">*</span></label>
+
                                 <input type="file" name="bank_proof" accept=".jpg,.jpeg,.png,.pdf"
                                        :class="errors.bank_proof ? 'border-red-400' : ''"
                                        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#2D1622] file:text-white hover:file:bg-[#422132]">
@@ -370,7 +400,9 @@
                                 <a href="#" class="text-[#6B7A4A] hover:underline">Syarat</a>
                                 &
                                 <a href="#" class="text-[#6B7A4A] hover:underline">Ketentuan dan Kebijakan Privasi</a>
+
                                 <span class="text-red-500">*</span>
+
                             </label>
                         </div>
                         <p x-show="errors.agree" x-text="errors.agree" class="text-red-500 text-xs -mt-3"></p>
@@ -458,6 +490,7 @@
                     }
 
                     if (this.form.username && /\d/.test(this.form.username)) {
+
                         this.errors.username = 'Nama tidak boleh mengandung angka.';
                         hasError = true;
                     }
@@ -465,13 +498,13 @@
                     if (this.form.contact_number && !/^\d{10,15}$/.test(this.form.contact_number)) {
                         this.errors.contact_number = 'Nomor kontak harus angka, 10-15 digit.';
                         hasError = true;
+
                     }
 
                     if (!this.form.email.trim()) {
                         this.errors.email = 'Email wajib diisi.';
                         hasError = true;
                     }
-
                     if (!this.form.contact_number.trim()) {
                         this.errors.contact_number = 'Nomor kontak wajib diisi.';
                         hasError = true;
@@ -503,11 +536,35 @@
                 submitForm() {
                     this.errors = {};
 
+                    let hasError = false;
+
+                    if (!this.form.entity_type) {
+                        this.errors.entity_type = 'Tipe akun wajib dipilih.';
+                        hasError = true;
+                    }
+                    if (!this.form.bank_name.trim()) {
+                        this.errors.bank_name = 'Nama bank wajib diisi.';
+                        hasError = true;
+                    }
+                    if (!this.form.account_number.trim()) {
+                        this.errors.account_number = 'Nomor rekening wajib diisi.';
+                        hasError = true;
+                    }
+                    if (!this.form.account_holder.trim()) {
+                        this.errors.account_holder = 'Nama pemilik rekening wajib diisi.';
+                        hasError = true;
+                    }
                     if (!this.form.agree) {
                         this.errors.agree = 'Anda harus menyetujui syarat dan ketentuan.';
+                        hasError = true;
+                    }
+
+                    if (hasError) {
                         this.showErrorModal = true;
                         return;
                     }
+
+
 
                     const formEl = this.$el.closest('form');
                     const formData = new FormData(formEl);
@@ -516,8 +573,12 @@
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+
+                                ?? document.querySelector('input[name="_token"]').value
+
                                 ?? document.querySelector('input[name="_token"]').value,
                             'Accept': 'application/json',
+
                         },
                         body: formData
                     })
