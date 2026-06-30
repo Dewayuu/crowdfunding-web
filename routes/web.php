@@ -13,6 +13,7 @@ use App\Http\Controllers\PublicCampaignController;
 use App\Http\Controllers\User\UserCampaignController;
 use App\Http\Controllers\User\CampaignController as CreateCampaignController;
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -100,7 +101,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/campaigns', [UserCampaignController::class, 'index'])->name('user.campaigns');
 
     // route sementara buat cek halaman
-    Route::get('/user/campaigns/{id}/detail', [UserCampaignController::class, 'ownerDetail'])->name('user.campaigns.owner-detail');
+    //Route::get('/user/campaigns/{id}/detail', [UserCampaignController::class, 'ownerDetail'])->name('user.campaigns.owner-detail');
 
     // route sementara buat cek halaman
     Route::get('/user/campaigns/{id}/edit', function ($id) {

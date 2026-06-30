@@ -108,6 +108,8 @@ class DisbursementController extends Controller
             ->select(
                 'r.*',
                 'd.donation_id',
+                'd.midtrans_order_id', 
+                'd.payment_status',
                 'd.donor_name',
                 'd.amount',
                 'd.payment_method',
@@ -382,6 +384,7 @@ class DisbursementController extends Controller
             ->where('d.campaign_id', $campaignId)
             ->select(
                 'd.donation_id',
+                'd.midtrans_order_id',
                 'd.donor_name',
                 'd.amount',
                 'uba.bank_name',
@@ -405,12 +408,12 @@ class DisbursementController extends Controller
         $callback = function() use($refunds) {
             $file = fopen('php://output', 'w');
             
-            fputcsv($file, ['No', 'ID Donasi', 'Nama Donatur', 'Nama Bank', 'Nomor Rekening', 'Atas Nama', 'Nominal Refund', 'Status']);
-
+            fputcsv($file, ['No', 'Order ID Midtrans', 'Nama Donatur', 'Nama Bank', 'Nomor Rekening', 'Atas Nama', 'Nominal Refund', 'Status']);
+            
             foreach ($refunds as $index => $item) {
                 fputcsv($file, [
                     $index + 1,
-                    '#DON-' . $item->donation_id,
+                    $item->midtrans_order_id ?? ('#DON-' . $item->donation_id),
                     $item->donor_name,
                     $item->bank_name ?? '-',
                     $item->account_number ? "'" . $item->account_number : '-', 

@@ -18,9 +18,9 @@
     @livewireScripts
 
     <div class="w-full md:w-72 bg-[#2D1622] text-white flex flex-col min-h-screen px-6 py-8 shadow-xl shrink-0">
-        <div class="text-xl font-bold mb-8 tracking-wide text-gray-200 px-2">
-            Logo
-        </div>
+        <a href="{{ url('/') }}" style="font-family: Georgia, serif;" class="text-2xl font-bold mb-8 tracking-wide text-white px-2 hover:opacity-80 transition block">
+            Hati<span class="text-[#F1642E]">Nurani</span>
+        </a>
 
         <div class="mb-8 px-2">
             <h3 class="text-xl font-bold tracking-wide text-gray-100 mb-4">Halo!</h3>

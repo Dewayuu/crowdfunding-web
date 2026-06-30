@@ -85,4 +85,20 @@ class Campaign extends Model
     {
         return $this->hasMany(Donation::class, 'campaign_id', 'campaign_id');
     }
+
+    public function getRemainingTargetAttribute(): float
+    {
+        return max(
+            0,
+            $this->target_amount - $this->current_amount
+        );
+    }
+
+    public function getCanDisburseAttribute() {
+        return $this->current_amount >= $this->target_amount;
+    }
+
+    public function getIsDeadlinePassedAttribute() {
+        return $this->end_date && now()->greaterThan($this->end_date);
+    }
 }

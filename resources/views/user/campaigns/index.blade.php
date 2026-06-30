@@ -80,6 +80,15 @@
                                 </span>
                             @else
                                 <span class="inline-flex items-center px-3 py-0.5 text-xs font-semibold text-[#FA6B6B] bg-[#FDE8E7] rounded-full">Ditolak</span>
+<<<<<<< HEAD
+=======
+                                @if($campaign->admin_notes)
+                                    <div class="mt-2 text-xs text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">
+                                        <span class="font-bold block mb-0.5">Alasan Penolakan:</span>
+                                        {{ $campaign->admin_notes }}
+                                    </div>
+                                @endif
+>>>>>>> main
                             @endif
                         </div>
 
@@ -90,6 +99,7 @@
                     </div>
 
                     <div class="self-end md:self-start flex flex-col space-y-2 min-w-[110px]">
+<<<<<<< HEAD
                         <a href="{{ route('user.campaigns.owner-detail', ['id' => $campaign->campaign_id]) }}" class="text-center px-4 py-1.5 border border-gray-200 text-xs font-semibold text-gray-500 hover:text-[#2D1622] hover:bg-[#F6ECEF] hover:border-gray-300 rounded-lg transition bg-gray-50/50 shadow-2xs">
                             Lihat Detail
                         </a>
@@ -97,6 +107,74 @@
                         <a href="{{ route('user.campaigns.edit', ['id' => $campaign->campaign_id]) }}" class="text-center px-4 py-1.5 border border-gray-200 text-xs font-semibold text-gray-500 hover:text-[#2D1622] hover:bg-[#F6ECEF] hover:border-gray-300 rounded-lg transition bg-white shadow-2xs">
                             <i class="fa-regular fa-pen-to-square mr-1"></i> Edit
                         </a>
+=======
+                        <a href="{{ route('user.campaigns.edit', ['id' => $campaign->campaign_id]) }}" class="text-center px-4 py-1.5 border border-gray-200 text-xs font-semibold text-gray-500 hover:text-[#2D1622] hover:bg-[#F6ECEF] hover:border-gray-300 rounded-lg transition bg-white shadow-2xs">
+                            <i class="fa-regular fa-pen-to-square mr-1"></i> Edit
+                        </a>
+
+                        @if($campaign->last_disbursement && $campaign->last_disbursement->disbursement_status === 'rejected')
+                            <div class="mt-2 text-[10px] text-red-600 bg-red-50 p-2 rounded border border-red-100">
+                                <span class="font-bold block">Pencairan Ditolak:</span>
+                                {{ $campaign->last_disbursement->rejection_reason }}
+                            </div>
+                        @endif
+
+                        @php
+                            $isPending = $campaign->last_disbursement && $campaign->last_disbursement->disbursement_status === 'pending';
+                        @endphp
+
+                        @if($campaign->disbursement_option === 'REQUESTED')
+                            <div class="w-full text-center px-4 py-2 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold rounded-lg flex flex-col gap-2 items-center justify-center">
+                                @if($campaign->last_disbursement)
+                                    <div class="flex items-center">
+                                        <i class="fa-solid fa-clock-rotate-left mr-2"></i> 
+                                        {{ $campaign->last_disbursement->disbursement_status === 'pending' ? 'Sedang Diproses Admin' : 'Sudah Diproses' }}
+                                    </div>
+                                    
+                                    @if($campaign->last_disbursement->transfer_proof)
+                                        <a href="{{ asset('storage/' . $campaign->last_disbursement->transfer_proof) }}" 
+                                        target="_blank" 
+                                        class="block w-full py-1 bg-white border border-blue-200 text-blue-600 rounded hover:bg-blue-100 transition text-[10px]">
+                                            <i class="fa-solid fa-file-invoice mr-1"></i> Lihat Bukti Transfer
+                                        </a>
+                                    @endif
+
+                                @elseif($campaign->has_refund)
+                                    <div class="flex items-center">
+                                        <i class="fa-solid fa-rotate-left mr-2"></i> 
+                                        Dana Direfund ke Donatur
+                                    </div>
+                                @endif
+                            </div>
+                        @elseif($campaign->disbursement_option === 'ALLOW_DISBURSE')
+                            <form action="{{ route('user.campaigns.disburse', $campaign->campaign_id) }}" method="POST">
+                                @csrf
+                                <button type="submit" 
+                                    {{ $isPending ? 'disabled' : '' }}
+                                    class="w-full text-center px-4 py-1.5 {{ $isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#55A08E] hover:bg-teal-700' }} text-white text-xs font-semibold rounded-lg transition">
+                                    {{ $isPending ? 'Sedang Diproses' : 'Cairkan Dana' }}
+                                </button>
+                            </form>
+                        
+                        @elseif($campaign->disbursement_option === 'SHOW_CHOICE')
+                            <div class="flex gap-2">
+                                <form action="{{ route('user.campaigns.disburse', $campaign->campaign_id) }}" method="POST" 
+                                    onsubmit="return confirmAction(this, 'Apakah Anda yakin ingin mencairkan dana campaign ini? Pastikan data bank Anda sudah benar.');">
+                                    @csrf
+                                    <button type="submit" 
+                                        {{ $isPending ? 'disabled' : '' }}
+                                        class="w-full text-center px-4 py-1.5 {{ $isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#55A08E] hover:bg-teal-700' }} text-white text-xs font-semibold rounded-lg transition">
+                                        {{ $isPending ? 'Sedang Diproses' : 'Cairkan Dana' }}
+                                    </button>
+                                </form>
+                                <form action="{{ route('user.campaigns.refund', $campaign->campaign_id) }}" method="POST" class="flex-1" 
+                                    onsubmit="return confirmAction(this, 'PERINGATAN: Campaign akan dibatalkan dan semua donasi akan dikembalikan. Aksi ini tidak dapat dibatalkan.');">
+                                    @csrf
+                                    <button type="submit" class="w-full text-center px-2 py-1.5 bg-red-500 text-white text-[10px] font-semibold rounded-lg hover:bg-red-600 transition">Refund</button>
+                                </form>
+                            </div>
+                        @endif
+>>>>>>> main
                     </div>
                 </div>
 
@@ -123,4 +201,29 @@
         @include('layouts.pagination', ['items' => $campaigns])
     </div>
 </div>
+<<<<<<< HEAD
 @endsection
+=======
+@endsection
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmAction(formElement, message) {
+        event.preventDefault(); 
+        Swal.fire({
+            title: 'Konfirmasi Aksi',
+            text: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#55A08E',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Lanjutkan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formElement.submit(); 
+            }
+        });
+    }
+</script>
+>>>>>>> main
